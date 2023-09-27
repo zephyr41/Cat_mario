@@ -1,8 +1,15 @@
 package main
 
 import rl "github.com/gen2brain/raylib-go/raylib"
-type Game struct {
-	Mario   *Mario
+const (
+	screenWidth = 1366
+	screenHeight = 768
+)
+func input(){}
+func updaete(){}
+func render(){
+	rl.BeginDrawing()
+	rl.ClearBackground(rl.Black )
 }
 func Play() {
 	rl.InitWindow(1366, 768, "Donkey Kong Mario") // définit la taille de la fenetre
