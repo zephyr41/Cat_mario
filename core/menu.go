@@ -2,7 +2,7 @@ package main
 
 import rl "github.com/gen2brain/raylib-go/raylib"
 
-func menu (){
+func Menu (){
 	rl.InitWindow(1366, 768, "Donkey Kong Mario") // définit la taille de la fenetre
 	defer rl.CloseWindow() // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
@@ -26,24 +26,6 @@ func menu (){
 		Rectangle: rl.NouveauRectangle(300, 200, 200, 50),
 		Couleur:   rl.Bleu,
 	}
-	
-	optionsBouton := Bouton{
-		Texte:     "OPTIONS",
-		Rectangle: rl.NouveauRectangle(300, 300, 200, 50),
-		Couleur:   rl.Vert,
-	}
-	
-	quitterBouton := Bouton{
-		Texte:     "QUITTER",
-		Rectangle: rl.NouveauRectangle(300, 400, 200, 50),
-		Couleur:   rl.Rouge,
-	}
-		Texte:     "JOUER",// Le texte "JOUER" pour ce Bouton
-		Rectangle: rl.NouveauRectangle(300, 200, 200, 50),
-		Couleur:   rl.Bleu,
-		Rectangle: rl.NouveauRectangle(300, 200, 200, 50),
-		Couleur:   rl.Bleu,
-	
 	optionsBouton := Bouton{
 		Texte:     "OPTIONS",
 		Rectangle: rl.NouveauRectangle(300, 300, 200, 50),
