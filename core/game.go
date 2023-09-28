@@ -2,6 +2,7 @@ package main
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
+
 )
 
 //var running = true // permet de savoir si la fenetre est ouverte ou fermer
@@ -44,12 +45,13 @@ func input() {
 
 func update(w *gameEngine) { // va définir les mouvements du personnage
 	w.isRunning = !rl.WindowShouldClose()
-
+	
 }
 
 func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire les dessins
-	rl.BeginDrawing()
-	rl.ClearBackground(rl.Black)
+rl.BeginDrawing()
+rl.ClearBackground(rl.Black)
+rl.LoadTexture("assets/Allsprites.png")
  // faire une condition pour dire tant que le joueur n'est pas mort : 
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	rl.EndDrawing()
@@ -72,21 +74,11 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 		rl.DrawRectangle(650,500,150,80,rl.Purple)
 	}
 }
-	
 
-	// func ActiveDrawBuffers(count int32){}
-		
+func DrawTexturePro(texture rl.Texture2D, sourceRec, destRec rl.Rectangle, origin rl.Vector2, rotation float32, tint rl.Color) { // permet de faire un carrée pour afficher un sprite : 
 
-
-
-	func DrawTexturePro(texture rl.Texture2D, sourceRec, destRec rl.Rectangle, origin rl.Vector2, rotation float32, tint rl.Color) { // permet de faire un carrée pour afficher un sprite : 
-		texture = rl.LoadTexture("assets/Allsprites.png")
-		sourceRec = rl.NewRectangle(0,0,800,800)
-		destRec = rl.Rectangle{0, 0, -64, 64}
-		origin = rl.Vector2{3,8}
-	}
-	
-	func quit() {
-		rl.CloseWindow()
-	}
+}
+func quit() {
+	rl.CloseWindow()
+}
 
