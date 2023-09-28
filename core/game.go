@@ -10,8 +10,8 @@ func render(){
 	rl.ClearBackground(rl.Black )
 }
 
-func Play(screenWidth int32, screenHeight int32) {
-	rl.InitWindow(screenWidth, screenHeight, "Donkey Kong Mario") // définit la taille de la fenetre
+func Play(w window) {
+	rl.InitWindow(w.width, w.heiggh, "Donkey Kong Mario") // définit la taille de la fenetre
 	defer rl.CloseWindow() // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
 	for !rl.WindowShouldClose() { // boucle tant que c'est pas fermé
@@ -21,3 +21,10 @@ func Play(screenWidth int32, screenHeight int32) {
 		rl.EndDrawing()
 	}
 }
+
+func (p *window) Init(width int32, height int32, isClose bool){ // méthode = func par rapport a structure
+	p.width = width
+	p.heigh = height
+	p.isClose = isClose
+}
+
