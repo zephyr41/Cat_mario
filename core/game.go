@@ -52,25 +52,41 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	rl.ClearBackground(rl.Black)
  // faire une condition pour dire tant que le joueur n'est pas mort : 
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
-	
 	rl.EndDrawing()
-
+	
 	rl.DrawRectangle(650,100,100,38,rl.Blue)
 
 	rl.DrawRectangle(650,235,100,38,rl.Yellow)
 
 	rl.DrawRectangle(650,500,100,38,rl.Red)
-	if rl.IsMouseButtonPressed(1){
-		rl.DrawRectangle(650,500,100,38,rl.Purple)
+
+//le debut de la mort des bouttons
+
+	if rl.IsMouseButtonPressed(0){
+		rl.DrawRectangle(650,100,150,80,rl.Purple)
+	}
+	if rl.IsMouseButtonPressed(0){
+		rl.DrawRectangle(650,235,150,80,rl.Purple)
+	}
+	if rl.IsMouseButtonPressed(0){
+		rl.DrawRectangle(650,500,150,80,rl.Purple)
 	}
 }
+	
 
-func DrawTexturePro(texture rl.Texture2D, sourceRec, destRec rl.Rectangle, origin rl.Vector2, rotation float32, tint rl.Color) { // permet de faire un carrée pour afficher un sprite : 
+	// func ActiveDrawBuffers(count int32){}
+		
 
-}
-func quit() {
-	rl.CloseWindow()
-}
 
-func drawScene() {
-}
+
+	func DrawTexturePro(texture rl.Texture2D, sourceRec, destRec rl.Rectangle, origin rl.Vector2, rotation float32, tint rl.Color) { // permet de faire un carrée pour afficher un sprite : 
+		texture = rl.LoadTexture("assets/Allsprites.png")
+		sourceRec = rl.NewRectangle(0,0,800,800)
+		destRec = rl.Rectangle{0, 0, -64, 64}
+		origin = rl.Vector2{3,8}
+	}
+	
+	func quit() {
+		rl.CloseWindow()
+	}
+
