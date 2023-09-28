@@ -4,7 +4,7 @@ import rl "github.com/gen2brain/raylib-go/raylib"
 
 type ObjectWhoMoove struct {
 	Position rl.Vector2
-	txMarioSprite rl.Texture2D // faudrait dire en gros : la texture de 
+		
 							   // de tel objet c'est ça
 							   // objectif, en affiché un simple
 }
