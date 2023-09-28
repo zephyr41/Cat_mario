@@ -23,20 +23,21 @@ func Menu (){
 	
 	jouerBouton := Bouton{
 		Texte:     "JOUER",
-		Rectangle: rl.NouveauRectangle(300, 200, 200, 50),
-		Couleur:   rl.Bleu,
+		Rectangle: rl.NewRectangle(300, 200, 200, 50),
+		Couleur:   rl.Blue,
 	}
 	optionsBouton := Bouton{
 		Texte:     "OPTIONS",
-		Rectangle: rl.NouveauRectangle(300, 300, 200, 50),
-		Couleur:   rl.Vert,
+		Rectangle: rl.NewRectangle(300, 300, 200, 50),
+		Couleur:   rl.Green,
 	}
 	
 	quitterBouton := Bouton{
 		Texte:     "QUITTER",
-		Rectangle: rl.NouveauRectangle(300, 400, 200, 50),
-		Couleur:   rl.Rouge,
+		Rectangle: rl.NewRectangle(300, 400, 200, 50),
+		Couleur:   rl.Red,
 	}
 	}
+
 
 	
