@@ -33,7 +33,15 @@ func render() {
 	rl.ClearBackground(rl.Black)
 	drawScene()
 	rl.EndDrawing()
-	
+
+	rl.DrawRectangle(650,100,100,38,rl.Blue)
+
+	rl.DrawRectangle(650,235,100,38,rl.Yellow)
+
+	rl.DrawRectangle(650,500,100,38,rl.Red)
+	if rl.IsMouseButtonPressed(1){
+		rl.DrawRectangle(650,500,100,38,rl.Purple)
+	}
 }
 
 func quit() {
@@ -41,4 +49,5 @@ func quit() {
 }
 
 func drawScene() {
+
 }
