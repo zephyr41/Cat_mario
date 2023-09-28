@@ -11,7 +11,7 @@ func render(){
 }
 
 func Play(w window) {
-	rl.InitWindow(w.width, w.heiggh, "Donkey Kong Mario") // définit la taille de la fenetre
+	rl.InitWindow(w.width, w.heigh, "Donkey Kong Mario") // définit la taille de la fenetre
 	defer rl.CloseWindow() // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
 	for !rl.WindowShouldClose() { // boucle tant que c'est pas fermé
