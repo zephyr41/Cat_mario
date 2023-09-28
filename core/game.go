@@ -12,6 +12,7 @@ func render(){
 
 func Play(w window) {
 	rl.InitWindow(w.width, w.heigh, "Donkey Kong Mario") // définit la taille de la fenetre
+	rl.InitWindow(w.width, w.heigh, w.title) // définit la taille de la fenetre
 	defer rl.CloseWindow() // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
 	for !rl.WindowShouldClose() { // boucle tant que c'est pas fermé
@@ -22,9 +23,10 @@ func Play(w window) {
 	}
 }
 
-func (p *window) Init(width int32, height int32, isClose bool){ // méthode = func par rapport a structure
+func (p *window) Init(width int32, height int32, isClose bool, title string){ // méthode = func par rapport a structure
 	p.width = width
 	p.heigh = height
 	p.isClose = isClose
+	p.title = title
 }
 
