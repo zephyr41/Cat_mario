@@ -1,12 +1,9 @@
 package main
 
 func main() {
-    Menu()
-	Play()
+	screenWidth := 1366
+	screenHeight := 768
+    Menu(screenWidth, screenHeight)
+	Play(screenWidth, screenHeight)
 	//firstx	
 }
-
-func Play() {
-	panic("unimplemented")
-}
-
