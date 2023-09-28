@@ -18,26 +18,6 @@ func Menu (){
 	type Bouton struct {  // On défini un nouveau type appelé Bouton
 		Texte     string   
 		Rectangle rl.Rectangle  // Un rectangle pour définir la position et la taille du Bouton
-		Couleur   rl.Couleur   // La couleur du Bouton
+		Couleur   rl.Color   // La couleur du Bouton
 	}
-	
-	jouerBouton := Bouton{
-		Texte:     "JOUER",
-		Rectangle: rl.NewRectangle(300, 200, 200, 50),
-		Couleur:   rl.Blue,
-	}
-	optionsBouton := Bouton{
-		Texte:     "OPTIONS",
-		Rectangle: rl.NewRectangle(300, 300, 200, 50),
-		Couleur:   rl.Green,
-	}
-	
-	quitterBouton := Bouton{
-		Texte:     "QUITTER",
-		Rectangle: rl.NewRectangle(300, 400, 200, 50),
-		Couleur:   rl.Red,
-	}
-	}
-
-
-	
+}
