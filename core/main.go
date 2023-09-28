@@ -6,7 +6,3 @@ func main() {
 	//firstx	
 }
 
-func Play() {
-	panic("unimplemented")
-}
-
