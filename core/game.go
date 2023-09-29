@@ -34,7 +34,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	defer rl.CloseWindow()
 	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
-	/
+
 for p.isRunning {
 		
 		p.input()
