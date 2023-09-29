@@ -104,7 +104,7 @@ func (p *gameEngine) display() {
 		case Options:
 			// OPTION //
 
-			rl.DrawRectangle(1, 1, 10000, 10000, rl.Blue)
+			rl.ClearBackground(rl.White)
 
 			rl.DrawText("Setings Glogbal", 15, 45, 20, rl.Black)
 		
@@ -114,6 +114,13 @@ func (p *gameEngine) display() {
 				}
 			} else {
 				rl.DrawRectangle(15, 90, 50, 50, rl.LightGray)
+			}
+			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(70, 90, 50, 50)) {
+				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
+				if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
+				}
+			} else {
+				rl.DrawRectangle(70, 90, 50, 50, rl.LightGray)
 			}
 			
 			rl.DrawText("FPS / TOUCHES",15,70,20,rl.Black)
