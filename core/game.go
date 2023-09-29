@@ -6,6 +6,11 @@ import (
 //var running = true // permet de savoir si la fenetre est ouverte ou fermer
 
 func (p *gameEngine) Init(width int32, height int32, title string, isRunning bool, dead bool, score int) { // initialise les propriété de la fenetre
+	// Pour selectionner notre joueur (faire une structure plus tard ? ) : 
+	// va déssiner un rectangle dans la feuille de sprite pour pouvoir dessiner mario : il aura : x & y la position de ou il part
+	// width et heigt seront la largeur de la fenetre
+	// src est la source (la feuille) donc ça position
+	// Dest est la ou on l'envoie (notre fênetre de jeu)
 	p.width = width
 	p.heigh = height
 	p.title = title
@@ -18,22 +23,18 @@ func (p *gameEngine) Init(width int32, height int32, title string, isRunning boo
 
 func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.InitWindow(p.width, p.heigh, p.title)
-	p.display()
-	 // définit la taille de la fenetre
+	// définit la taille de la fenetre
 	p.isRunning = true
-	defer rl.CloseWindow()
-	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
-	rl.SetTargetFPS(60) // définit les fps a x
 	p.texture = rl.LoadTexture("../assets/allspritess.png")
-	// rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 200, 200,70), rl.NewRectangle(0, 0,200, 70), rl.NewVector2(0,0), 0, rl.White) // drawTextureMario
-	// Pour selectionner notre joueur (faire une structure plus tard ) : 
-	// va déssiner un rectangle dans la feuille de sprite pour pouvoir dessiner mario : il aura : x & y la position de ou il part
-	// width et heigt seront la largeur de la fenetre
-	// src est la source (la feuille) donc ça position
-	// Dest est la ou on l'envoie (notre fênetre de jeu)
 	p.playerDest = rl.NewRectangle(0,200,200,70)
 	p.playerSrc = rl.NewRectangle(0,200,200,70)
 	p.playerVector = rl.NewVector2(0,0)
+	
+	p.display()
+	defer rl.CloseWindow()
+	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
+	rl.SetTargetFPS(60) // définit les fps a x
+	/
 for p.isRunning {
 		
 		p.input()
