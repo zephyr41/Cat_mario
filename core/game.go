@@ -3,10 +3,11 @@ package main
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
+
 //var running = true // permet de savoir si la fenetre est ouverte ou fermer
 
 func (p *gameEngine) Init(width int32, height int32, title string, isRunning bool, dead bool, score int) { // initialise les propriété de la fenetre
-	// Pour selectionner notre joueur (faire une structure plus tard ? ) : 
+	// Pour selectionner notre joueur (faire une structure plus tard ? ) :
 	// va déssiner un rectangle dans la feuille de sprite pour pouvoir dessiner mario : il aura : x & y la position de ou il part
 	// width et heigt seront la largeur de la fenetre
 	// src est la source (la feuille) donc ça position
@@ -26,15 +27,14 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	// définit la taille de la fenetre
 	p.isRunning = true
 	p.texture = rl.LoadTexture("../assets/allspritess.png")
-	p.playerDest = rl.NewRectangle(0,200,200,70)
-	p.playerSrc = rl.NewRectangle(0,200,200,70)
-	p.playerVector = rl.NewVector2(0,0)
-	
+	p.playerDest = rl.NewRectangle(0, 200, 200, 70)
+	p.playerSrc = rl.NewRectangle(0, 200, 200, 70)
+	p.playerVector = rl.NewVector2(0, 0)
+
 	p.display()
-	defer rl.CloseWindow()
 	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
-
+	/
 for p.isRunning {
 		
 		p.input()
@@ -54,71 +54,74 @@ func (w *gameEngine) update() { // va définir les mouvements du personnage
 
 }
 
-//_________________________________________________________________Menu_______________________________________________________________//
-// iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification 
+// _________________________________________________________________Menu_______________________________________________________________//
+// iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification
 // const actuelle dans une déclaration const (généralement entre parenthèses). Il est indexé à zéro.
 const (
-    MenuDisplay = iota
-    Game
-    Options
+	MenuDisplay = iota
+	Game
+	Options
 )
+
 var currentGameState = MenuDisplay
 
-func (p *gameEngine) display(){
-	
-		// defer rl.CloseWindow()
-	
-		// rl.SetTargetFPS(60)
-	
-		for p.isRunning {
-			switch currentGameState {
-			case MenuDisplay:
-				if rl.IsKeyPressed(rl.KeyEnter) {
-					currentGameState = Game
-				} else if rl.IsKeyPressed(rl.KeyO) {
-					currentGameState = Options
-				} else if rl.IsKeyPressed(rl.KeyEscape) {
-					rl.CloseWindow()
-				}
-			case Game:
-				if rl.IsKeyPressed(rl.KeyEscape) {
-					currentGameState = MenuDisplay
-					
-				}
-			case Options:
-				if rl.IsKeyPressed(rl.KeyEscape) {
-					currentGameState = MenuDisplay
-				}
-			}
-	
-			rl.BeginDrawing()
-			rl.ClearBackground(rl.RayWhite)
-	
-			switch currentGameState {
-			case MenuDisplay:
-				// Menue
-				rl.DrawText("PLAY - Appuyez sur ENTER pour jouer", 10, 10, 20, rl.DarkGray)
-				rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options", 10, 30, 20, rl.DarkGray)
-				rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter", 10, 50, 20, rl.DarkGray)
-			case Game:
-				// JEUX
-				rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
-				p.render()
+func (p *gameEngine) display() {
 
-			case Options:
-				rl.DrawRectangle(1,1,10000,10000,rl.Blue)
-				// OPTION
-				
-				//QUiTTEZ
-				rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
-				
+	// defer rl.CloseWindow()
+
+	// rl.SetTargetFPS(60)
+
+	for p.isRunning {
+		switch currentGameState {
+		case MenuDisplay:
+			if rl.IsKeyPressed(rl.KeyEnter) {
+				currentGameState = Game
+			} else if rl.IsKeyPressed(rl.KeyO) {
+				currentGameState = Options
+			} else if rl.IsKeyPressed(rl.KeyEscape) {
+				rl.CloseWindow()
 			}
-	
-			rl.EndDrawing()
+		case Game:
+			if rl.IsKeyPressed(rl.KeyEscape) {
+				currentGameState = MenuDisplay
+
+			}
+		case Options:
+			if rl.IsKeyPressed(rl.KeyEscape) {
+				currentGameState = MenuDisplay
+			}
 		}
-	}
-//_________________________________________________________________Menu_______________________________________________________________//
 
+		rl.BeginDrawing()
+		rl.ClearBackground(rl.RayWhite)
+
+		switch currentGameState {
+		case MenuDisplay:
+			// Menue
+			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer", 10, 10, 20, rl.DarkGray)
+			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options", 10, 30, 20, rl.DarkGray)
+			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter", 10, 50, 20, rl.DarkGray)
+		case Game:
+			// JEUX
+			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
+			p.input()
+			p.update()
+			p.render()
+
+		case Options:
+			rl.DrawRectangle(1, 1, 10000, 10000, rl.Blue)
+			// OPTION
+
+			//QUiTTEZ
+			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
+
+		}
+
+		rl.EndDrawing()
+	}
+}
+
+//_________________________________________________________________Menu_______________________________________________________________//
 
 func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire les dessins
 	// rl.BeginDrawing()
@@ -140,4 +143,3 @@ func (p *gameEngine) quit() {
 	// rl.UnloadTexture(p.texture)
 	// rl.CloseWindow()
 }
-
