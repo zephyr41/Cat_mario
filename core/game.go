@@ -27,9 +27,9 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	// définit la taille de la fenetre
 	p.isRunning = true
 	p.texture = rl.LoadTexture("../assets/assets.png")
-	p.playerDest = rl.NewRectangle(0, 200, 200, 70)
-	p.playerSrc = rl.NewRectangle(0, 200, 200, 70)
-	p.playerVector = rl.NewVector2(0, 0)
+	p.playerSrc = rl.NewRectangle(2, 192, 25, 27)
+	p.playerDest = rl.NewRectangle(0, 32, 64, 64) // donne la taille du personnage : 
+	p.playerVector = rl.NewVector2(-(p.playerDest.Width), -(p.playerDest.Height))
 
 	p.display()
 	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
@@ -95,7 +95,8 @@ func (p *gameEngine) display() {
 			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter", 10, 50, 20, rl.Black)
 		case Game:
 			// JEUX
-			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
+			rl.ClearBackground(rl.Black)
+			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.White)
 			p.input()
 			p.update()
 			p.render()
