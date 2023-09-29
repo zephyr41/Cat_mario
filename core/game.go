@@ -17,6 +17,7 @@ func (p *gameEngine) Init(width int32, height int32, title string, isRunning boo
 }
 
 func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
+	rl.InitWindow(p.width, p.heigh, p.title)
 	p.display()
 	 // définit la taille de la fenetre
 	p.isRunning = true
@@ -33,13 +34,13 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerDest = rl.NewRectangle(0,200,200,70)
 	p.playerSrc = rl.NewRectangle(0,200,200,70)
 	p.playerVector = rl.NewVector2(0,0)
-
-	for p.isRunning {
+for p.isRunning {
 		
 		p.input()
 		p.update()
 		p.render()
 	}
+	
 	p.quit()
 }
 
@@ -63,12 +64,12 @@ const (
 var currentGameState = MenuDisplay
 
 func (p *gameEngine) display(){
-	rl.InitWindow(p.width, p.heigh, p.title)
+	
 		// defer rl.CloseWindow()
 	
 		// rl.SetTargetFPS(60)
 	
-		for !rl.WindowShouldClose() {
+		for p.isRunning {
 			switch currentGameState {
 			case MenuDisplay:
 				if rl.IsKeyPressed(rl.KeyEnter) {
@@ -81,6 +82,7 @@ func (p *gameEngine) display(){
 			case Game:
 				if rl.IsKeyPressed(rl.KeyEscape) {
 					currentGameState = MenuDisplay
+					
 				}
 			case Options:
 				if rl.IsKeyPressed(rl.KeyEscape) {
@@ -99,15 +101,16 @@ func (p *gameEngine) display(){
 				rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter", 10, 50, 20, rl.DarkGray)
 			case Game:
 				// JEUX
-				rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.White)
-				rl.DrawRectangle(1,1,10000,10000,rl.Black)
+				rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
+				p.render()
 
 			case Options:
 				rl.DrawRectangle(1,1,10000,10000,rl.Blue)
 				// OPTION
 				
 				//QUiTTEZ
-				rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.White)
+				rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
+				
 			}
 	
 			rl.EndDrawing()
@@ -129,7 +132,6 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	// rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 200, 200,70), rl.NewRectangle(0, 0,200, 70), rl.NewVector2(0,0), 0, rl.White) // drawTextureMario
 	rl.DrawTexturePro(g.texture, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
 	//rl.DrawTexture(g.texture,0,0,rl.White)
-	rl.EndDrawing()
 
 }
 
