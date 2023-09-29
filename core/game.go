@@ -105,6 +105,7 @@ func (p *gameEngine) display() {
 
 			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
 
+//ESSAIS DE BOUTTONS//
 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
 				rl.DrawRectangle(15, 90, 50, 50, rl.White)
 				if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
@@ -119,7 +120,30 @@ func (p *gameEngine) display() {
 			} else {
 				rl.DrawRectangle(70, 90, 50, 50, rl.LightGray)
 			}
+//ESSAIS DE BOUTTONS//
+// buttons := []struct {
+// 	Bounds rl.Rectangle
+// 	Text   string
+// }{
+// 	{rl.NewRectangle(screenWidth/20, screenHeight/20, 150, 40), "Back"},
+// 	{rl.NewRectangle(screenWidth-(150+screenWidth/20), screenHeight-(40+screenHeight/20), 150, 40), "Quit"},
+// }
 
+// for _, button := range buttons {
+// 	color := rl.Yellow
+// 	if rl.CheckCollisionPointRec(rl.GetMousePosition(), button.Bounds) {
+// 		color = rl.DarkGray
+// 		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+// 			switch button.Text {
+// 			case "Back":
+// 				currentScreen = 1
+// 			case "Quit":
+// 				rl.UnloadMusicStream(bgMusic)
+// 				rl.CloseAudioDevice()
+// 				rl.CloseWindow()
+// 				return
+// 			}
+			
 			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
 
 			// QUiTTEZ //
