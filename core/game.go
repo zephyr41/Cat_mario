@@ -1,6 +1,7 @@
 package main
 
 import (
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -27,25 +28,16 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	// définit la taille de la fenetre
 	p.isRunning = true
 	p.texture = rl.LoadTexture("../assets/assets.png")
-	p.playerSrc = rl.NewRectangle(2, 192, 25, 27)
-	p.playerDest = rl.NewRectangle(0, 32, 64, 64) // donne la taille du personnage : 
-	p.playerVector = rl.NewVector2(-(p.playerDest.Width), -(p.playerDest.Height))
+	p.playerSrc = rl.NewRectangle(2, 192, 25, 27) // selectionne un bout d'image dans la sheet sprite
+	p.playerDest = rl.NewRectangle(0, 32, 64, 64) // met une zone ou afficher ce bout d'image
+	p.playerVector = rl.NewVector2(-(p.playerDest.Width), -(p.playerDest.Height)) // permet de lui donner une position
+	p.playerSpeed = 0.05
 
 	p.display()
 	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
 
 }
-
-func (w *gameEngine) input() { // récupère les inputs de la map
-
-}
-
-func (w *gameEngine) update() { // va définir les mouvements du personnage
-	w.isRunning = !rl.WindowShouldClose()
-
-}
-
 // _________________________________________________________________Menu_______________________________________________________________//
 // iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification
 // const actuelle dans une déclaration const (généralement entre parenthèses). Il est indexé à zéro.
@@ -66,20 +58,20 @@ func (p *gameEngine) display() {
 	for p.isRunning {
 		switch currentGameState {
 		case MenuDisplay:
-			if rl.IsKeyPressed(rl.KeyEnter) {
+			if rl.IsKeyReleased(rl.KeyEnter) {
 				currentGameState = Game
-			} else if rl.IsKeyPressed(rl.KeyO) {
+			} else if rl.IsKeyReleased(rl.KeyO) {
 				currentGameState = Options
-			} else if rl.IsKeyPressed(rl.KeyEscape) {
+			} else if rl.IsKeyReleased(rl.KeyEscape) {
 				p.quit()
 			}
 		case Game:
-			if rl.IsKeyPressed(rl.KeyEscape) {
+			if rl.IsKeyReleased(rl.KeyEscape) {
 				currentGameState = MenuDisplay
 
 			}
 		case Options:
-			if rl.IsKeyPressed(rl.KeyEscape) {
+			if rl.IsKeyReleased(rl.KeyEscape) {
 				currentGameState = MenuDisplay
 			}
 		}
@@ -107,7 +99,7 @@ func (p *gameEngine) display() {
 			rl.ClearBackground(rl.White)
 
 			rl.DrawText("Setings Glogbal", 15, 45, 20, rl.Black)
-		
+
 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
 				rl.DrawRectangle(15, 90, 50, 50, rl.Black)
 				if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
@@ -122,8 +114,8 @@ func (p *gameEngine) display() {
 			} else {
 				rl.DrawRectangle(70, 90, 50, 50, rl.LightGray)
 			}
-			
-			rl.DrawText("FPS / TOUCHES",15,70,20,rl.Black)
+
+			rl.DrawText("FPS / TOUCHES", 15, 70, 20, rl.Black)
 
 			// QUiTTEZ //
 			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
@@ -131,8 +123,29 @@ func (p *gameEngine) display() {
 
 		rl.EndDrawing()
 	}
-}	
+}
 
+
+func (w *gameEngine) input() { // récupère les inputs de la map
+
+	if rl.IsKeyDown(rl.KeyUp) { // key left
+		w.playerDest.Y -= w.playerSpeed
+	} 
+	if rl.IsKeyDown(rl.KeyDown) { // key left
+		w.playerDest.Y += w.playerSpeed
+	} 
+	if rl.IsKeyDown(rl.KeyLeft) { // key left
+		w.playerDest.X -= w.playerSpeed
+	} 
+	if  rl.IsKeyDown(rl.KeyRight) { // key left
+		w.playerDest.X += w.playerSpeed
+	}
+}
+
+func (w *gameEngine) update() { // va définir les mouvements du personnage
+	w.isRunning = !rl.WindowShouldClose()
+
+}
 
 //_________________________________________________________________Menu_______________________________________________________________//
 
@@ -146,7 +159,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	// // destRecTest := rl.Rectangle{}
 	// // originTest := rl.Vector2{}
 
-	// rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 200, 200,70), rl.NewRectangle(0, 0,200, 70), rl.NewVector2(0,0), 0, rl.White) // drawTextureMario
+	
 	rl.DrawTexturePro(g.texture, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
 	//rl.DrawTexture(g.texture,0,0,rl.White)
 

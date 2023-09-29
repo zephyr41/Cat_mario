@@ -22,6 +22,7 @@ type gameEngine struct {
 	playerSrc rl.Rectangle
 	playerDest rl.Rectangle
 	playerVector rl.Vector2
+	playerSpeed float32
 	
 	isRunning bool
 
