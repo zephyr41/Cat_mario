@@ -53,7 +53,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	// destRecTest := rl.Rectangle{}
 	// originTest := rl.Vector2{}
 
-	rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 0, 600,600), rl.NewRectangle(0, 0,600, 600), rl.NewVector2(0,0), 0, rl.White)
+	rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 0, 600,800), rl.NewRectangle(0, 0,600, 800), rl.NewVector2(0,0), 0, rl.White)
 	//rl.DrawTexture(g.texture,0,0,rl.White)
 	rl.EndDrawing()
 

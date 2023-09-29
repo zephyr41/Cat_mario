@@ -22,3 +22,4 @@ type Bouton struct {  // On défini un nouveau type appelé Bouton
 	Rectangle rl.Rectangle  // Un rectangle pour définir la position et la taille du Bouton
 	Couleur   rl.Color   // La couleur du Bouton
 }
+
