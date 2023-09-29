@@ -2,12 +2,12 @@ package main
 
 import rl "github.com/gen2brain/raylib-go/raylib"
 
-type ObjectWhoMoove struct {
-	Position rl.Vector2
+// type ObjectWhoMoove struct {
+// 	Position rl.Vector2
 		
-							   // de tel objet c'est ça
-							   // objectif, en affiché un simple
-}
+// 							   // de tel objet c'est ça
+// 							   // objectif, en affiché un simple
+// }
 
 type gameEngine struct {
 	width int32
@@ -16,18 +16,15 @@ type gameEngine struct {
 	maxBarril int
 	score int
 	dead bool
-	mario ObjectWhoMoove
-	Barril ObjectWhoMoove
-	txSprites rl.Texture2D
+	//mario ObjectWhoMoove
+	//barril ObjectWhoMoove
+	texture rl.Texture2D
 	isRunning bool
 
 
-
 }
 
-type texture struct {
-	
-}
+
 func main() {
 
 	var game gameEngine // défini game a la struct window
