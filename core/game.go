@@ -3,7 +3,6 @@ package main
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
-
 //var running = true // permet de savoir si la fenetre est ouverte ou fermer
 
 func (p *gameEngine) Init(width int32, height int32, title string, isRunning bool, dead bool, score int) { // initialise les propriété de la fenetre
@@ -42,6 +41,68 @@ func (w *gameEngine) update() { // va définir les mouvements du personnage
 
 }
 
+
+const (
+    MenuDisplay = iota
+    Game
+    Options
+)
+var currentGameState = MenuDisplay
+
+func Display(){
+		// rl.InitWindow(800, 600, "Mon Jeu")
+		// defer rl.CloseWindow()
+	
+		// rl.SetTargetFPS(60)
+	
+		for !rl.WindowShouldClose() {
+			switch currentGameState {
+			case MenuDisplay:
+				if rl.IsKeyPressed(rl.KeyEnter) {
+					currentGameState = Game
+				} else if rl.IsKeyPressed(rl.KeyO) {
+					currentGameState = Options
+				} else if rl.IsKeyPressed(rl.KeyEscape) {
+					rl.CloseWindow()
+				}
+			case Game:
+				if rl.IsKeyPressed(rl.KeyEscape) {
+					currentGameState = MenuDisplay
+				}
+			case Options:
+				if rl.IsKeyPressed(rl.KeyEscape) {
+					currentGameState = MenuDisplay
+				}
+			}
+	
+			rl.BeginDrawing()
+			rl.ClearBackground(rl.RayWhite)
+	
+			switch currentGameState {
+			case MenuDisplay:
+				// Menue
+				rl.DrawText("PLAY - Appuyez sur ENTER pour jouer", 10, 10, 20, rl.DarkGray)
+				rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options", 10, 30, 20, rl.DarkGray)
+				rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter", 10, 50, 20, rl.DarkGray)
+			case Game:
+				// JEUX
+				rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.White)
+				rl.DrawRectangle(1,1,10000,10000,rl.Black)
+
+			case Options:
+				rl.DrawRectangle(1,1,10000,10000,rl.Blue)
+				// OPTION
+				
+				//QUiTTEZ
+				rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.White)
+			}
+	
+			rl.EndDrawing()
+		}
+	}
+//_________________________________________________________________Display___________________________________________________________//
+
+
 func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire les dessins
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
@@ -52,31 +113,16 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	// destRecTest := rl.Rectangle{}
 	// originTest := rl.Vector2{}
 
-	rl.DrawTexturePro(g.playerSprite, rl.NewRectangle(0, 0, 550,30), rl.NewRectangle(0, 0,550, 30), rl.NewVector2(0,0), 0, rl.White) // génère mario
+	rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 0, 600,800), rl.NewRectangle(0, 0,600, 800), rl.NewVector2(0,0), 0, rl.White)
 	//rl.DrawTexture(g.texture,0,0,rl.White)
 	rl.EndDrawing()
 
-	// rl.DrawRectangle(650, 100, 100, 38, rl.Blue)
-
-	// rl.DrawRectangle(650, 235, 100, 38, rl.Yellow)
-	// rl.DrawRectangle(650, 500, 100, 38, rl.Red)
-
-	// if rl.IsMouseButtonPressed(1) {
-	// 	rl.DrawRectangle(650, 500, 100, 38, rl.Purple)
-	// }
-
-	//rl.DrawTexturePro(g.TxClouds, rl.NewRectangle(-g.CloudRec.X, 0, float32(g.TxClouds.Width), float32(g.TxClouds.Height)),
-	//DrawTexturePro(texture, sourceRec, destRec, origin)
 }
-
-// func DrawTexturePro(texture rl.Texture2D, sourceRec, destRec rl.Rectangle, origin rl.Vector2) { // permet de faire un carrée pour afficher un sprite :
-// 	texture = rl.LoadTexture("../assets/Allsprites.png")
-// 	sourceRec = rl.NewRectangle(300,300, 100, 100)
-// 	destRec = rl.Rectangle{300, 300, 100, 100}
-// 	origin = rl.Vector2{0, 0}
-// }
 
 func (p *gameEngine) quit() {
 	rl.UnloadTexture(p.playerSprite)
 	rl.CloseWindow()
+}
+
+func drawScene() {
 }
