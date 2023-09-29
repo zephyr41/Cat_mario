@@ -18,7 +18,11 @@ type gameEngine struct {
 	dead bool
 	mario ObjectWhoMoove
 	//barril ObjectWhoMoove
-	playerSprite rl.Texture2D
+	texture rl.Texture2D
+	playerSrc rl.Rectangle
+	playerDest rl.Rectangle
+	playerVector rl.Vector2
+	
 	isRunning bool
 
 

@@ -23,7 +23,17 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	defer rl.CloseWindow()
 	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
-	p.playerSprite = rl.LoadTexture("../assets/allsprites.png")
+	p.texture = rl.LoadTexture("../assets/allspritess.png")
+	// rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 200, 200,70), rl.NewRectangle(0, 0,200, 70), rl.NewVector2(0,0), 0, rl.White) // drawTextureMario
+	// Pour selectionner notre joueur (faire une structure plus tard ) : 
+	// va déssiner un rectangle dans la feuille de sprite pour pouvoir dessiner mario : il aura : x & y la position de ou il part
+	// width et heigt seront la largeur de la fenetre
+	// src est la source (la feuille) donc ça position
+	// Dest est la ou on l'envoie (notre fênetre de jeu)
+	p.playerDest = rl.NewRectangle(0,200,200,70)
+	p.playerSrc = rl.NewRectangle(0,200,200,70)
+	p.playerVector = rl.NewVector2(0,0)
+
 	for p.isRunning {
 		p.input()
 		p.update()
@@ -113,16 +123,15 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	// destRecTest := rl.Rectangle{}
 	// originTest := rl.Vector2{}
 
-	rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 0, 600,800), rl.NewRectangle(0, 0,600, 800), rl.NewVector2(0,0), 0, rl.White)
+	// rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 200, 200,70), rl.NewRectangle(0, 0,200, 70), rl.NewVector2(0,0), 0, rl.White) // drawTextureMario
+	rl.DrawTexturePro(g.texture, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
 	//rl.DrawTexture(g.texture,0,0,rl.White)
 	rl.EndDrawing()
 
 }
 
 func (p *gameEngine) quit() {
-	rl.UnloadTexture(p.playerSprite)
+	rl.UnloadTexture(p.texture)
 	rl.CloseWindow()
 }
 
-func drawScene() {
-}
