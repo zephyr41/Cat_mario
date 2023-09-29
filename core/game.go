@@ -82,13 +82,18 @@ func (p *gameEngine) display() {
 		switch currentGameState {
 		case MenuDisplay:
 			// Menue
-			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer", 10, 10, 20, rl.Black)
-			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options", 10, 30, 20, rl.Black)
-			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter", 10, 50, 20, rl.Black)
+			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
+
+			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
+
+			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter :", 100, 450, 35, rl.White)
+
+			rl.ClearBackground(rl.DarkBlue)
+
 		case Game:
 			// JEUX
 			rl.ClearBackground(rl.Black)
-			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.White)
+			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu :", 100, 150, 35, rl.White)
 			p.input()
 			p.update()
 			p.render()
@@ -98,10 +103,10 @@ func (p *gameEngine) display() {
 
 			rl.ClearBackground(rl.White)
 
-			rl.DrawText("Setings Glogbal", 15, 45, 20, rl.Black)
+			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
 
 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
-				rl.DrawRectangle(15, 90, 50, 50, rl.Black)
+				rl.DrawRectangle(15, 90, 50, 50, rl.White)
 				if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
 				}
 			} else {
@@ -115,11 +120,12 @@ func (p *gameEngine) display() {
 				rl.DrawRectangle(70, 90, 50, 50, rl.LightGray)
 			}
 
-			rl.DrawText("FPS / TOUCHES", 15, 70, 20, rl.Black)
+			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
 
 			// QUiTTEZ //
-			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
+			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu :", 300, 45, 35, rl.White)
 		}
+		rl.ClearBackground(rl.DarkBlue)
 
 		rl.EndDrawing()
 	}
