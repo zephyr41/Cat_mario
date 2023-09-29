@@ -12,7 +12,6 @@ func (p *gameEngine) Init(width int32, height int32, title string, isRunning boo
 	p.isRunning = isRunning
 	p.dead = dead
 	p.score = score
-	// mario dest
 	// mario src
 
 }
@@ -24,13 +23,13 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	defer rl.CloseWindow()
 	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
-	p.texture = rl.LoadTexture("../assets/allsprites.png")
+	p.playerSprite = rl.LoadTexture("../assets/allsprites.png")
 	for p.isRunning {
 		p.input()
 		p.update()
 		p.render()
 	}
-	quit()
+	p.quit()
 }
 
 func (w *gameEngine) input() { // récupère les inputs de la map
@@ -113,18 +112,17 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	// sourceTest := rl.Rectangle{}
 	// destRecTest := rl.Rectangle{}
 	// originTest := rl.Vector2{}
-	Display()
-	rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 0, 600,800), rl.NewRectangle(0, 0,600, 800), rl.NewVector2(0,0), 0, rl.White) //map
+
+	rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 0, 600,800), rl.NewRectangle(0, 0,600, 800), rl.NewVector2(0,0), 0, rl.White)
 	//rl.DrawTexture(g.texture,0,0,rl.White)
 	rl.EndDrawing()
 
 }
 
-func quit() {
+func (p *gameEngine) quit() {
+	rl.UnloadTexture(p.playerSprite)
 	rl.CloseWindow()
 }
 
 func drawScene() {
 }
-
-//_________________________________________________________________Display___________________________________________________________//
