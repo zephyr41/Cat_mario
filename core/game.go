@@ -17,14 +17,15 @@ func (p *gameEngine) Init(width int32, height int32, title string, isRunning boo
 }
 
 func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
-
-	rl.InitWindow(p.width, p.heigh, p.title) // définit la taille de la fenetre
+	p.display()
+	 // définit la taille de la fenetre
 	p.isRunning = true
 	defer rl.CloseWindow()
 	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
 	p.playerSprite = rl.LoadTexture("../assets/allsprites.png")
 	for p.isRunning {
+		
 		p.input()
 		p.update()
 		p.render()
@@ -41,7 +42,9 @@ func (w *gameEngine) update() { // va définir les mouvements du personnage
 
 }
 
-
+//_________________________________________________________________Menu_______________________________________________________________//
+// iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification 
+// const actuelle dans une déclaration const (généralement entre parenthèses). Il est indexé à zéro.
 const (
     MenuDisplay = iota
     Game
@@ -49,8 +52,8 @@ const (
 )
 var currentGameState = MenuDisplay
 
-func Display(){
-		// rl.InitWindow(800, 600, "Mon Jeu")
+func (p *gameEngine) display(){
+	rl.InitWindow(p.width, p.heigh, p.title)
 		// defer rl.CloseWindow()
 	
 		// rl.SetTargetFPS(60)
@@ -100,28 +103,28 @@ func Display(){
 			rl.EndDrawing()
 		}
 	}
-//_________________________________________________________________Display___________________________________________________________//
+//_________________________________________________________________Menu_______________________________________________________________//
 
 
 func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire les dessins
-	rl.BeginDrawing()
-	rl.ClearBackground(rl.Black)
+	// rl.BeginDrawing()
+	// rl.ClearBackground(rl.Black)
 
-	// faire une condition pour dire tant que le joueur n'est pas mort :
-	//rl.DrawTexture(g.TxSprites, g.frameRec)
-	// sourceTest := rl.Rectangle{}
-	// destRecTest := rl.Rectangle{}
-	// originTest := rl.Vector2{}
+	// // faire une condition pour dire tant que le joueur n'est pas mort :
+	// //rl.DrawTexture(g.TxSprites, g.frameRec)
+	// // sourceTest := rl.Rectangle{}
+	// // destRecTest := rl.Rectangle{}
+	// // originTest := rl.Vector2{}
 
-	rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 0, 600,800), rl.NewRectangle(0, 0,600, 800), rl.NewVector2(0,0), 0, rl.White)
-	//rl.DrawTexture(g.texture,0,0,rl.White)
-	rl.EndDrawing()
+	// // rl.DrawTexturePro(g.texture, rl.NewRectangle(0, 0, 600,800), rl.NewRectangle(0, 0,600, 800), rl.NewVector2(0,0), 0, rl.White)
+	// //rl.DrawTexture(g.texture,0,0,rl.White)
+	// rl.EndDrawing()
 
 }
 
 func (p *gameEngine) quit() {
-	rl.UnloadTexture(p.playerSprite)
-	rl.CloseWindow()
+	// rl.UnloadTexture(p.playerSprite)
+	// rl.CloseWindow()
 }
 
 func drawScene() {
