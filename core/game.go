@@ -26,7 +26,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.InitWindow(p.width, p.heigh, p.title)
 	// définit la taille de la fenetre
 	p.isRunning = true
-	p.texture = rl.LoadTexture("../assets/allspritess.png")
+	p.texture = rl.LoadTexture("../assets/assets.png")
 	p.playerDest = rl.NewRectangle(0, 200, 200, 70)
 	p.playerSrc = rl.NewRectangle(0, 200, 200, 70)
 	p.playerVector = rl.NewVector2(0, 0)
@@ -71,7 +71,7 @@ func (p *gameEngine) display() {
 			} else if rl.IsKeyPressed(rl.KeyO) {
 				currentGameState = Options
 			} else if rl.IsKeyPressed(rl.KeyEscape) {
-				rl.CloseWindow()
+				p.quit()
 			}
 		case Game:
 			if rl.IsKeyPressed(rl.KeyEscape) {
@@ -95,7 +95,9 @@ func (p *gameEngine) display() {
 			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter", 10, 50, 20, rl.DarkGray)
 		case Game:
 			// JEUX
-			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.Black)
+			rl.ClearBackground(rl.Black)
+			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu", 10, 10, 20, rl.White)
+			
 			p.input()
 			p.update()
 			p.render()
@@ -132,6 +134,6 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 }
 
 func (p *gameEngine) quit() {
-	// rl.UnloadTexture(p.texture)
-	// rl.CloseWindow()
+	rl.UnloadTexture(p.texture)
+	rl.CloseWindow()
 }
