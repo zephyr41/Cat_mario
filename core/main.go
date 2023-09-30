@@ -39,7 +39,17 @@ type gameEngine struct {
 	playerFrame int
 	FrameCount int
 
+	//mapFile  string
+	//playerCanJump bool
+	//timePlayed float32
 
+
+	tileDest rl.Rectangle
+	tileSrc rl.Rectangle
+	tileMap []int
+	tileMapLink string
+	//srcMap []string
+	mapW, mapH int
 }
 
 
