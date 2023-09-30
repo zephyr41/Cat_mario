@@ -1,11 +1,8 @@
 package main
 
 import (
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
-
-//var running = true // permet de savoir si la fenetre est ouverte ou fermer
 
 func (p *gameEngine) Init(width int32, height int32, title string, isRunning bool, dead bool, score int) { // initialise les propriété de la fenetre
 	// Pour selectionner notre joueur (faire une structure plus tard ? ) :
@@ -19,183 +16,204 @@ func (p *gameEngine) Init(width int32, height int32, title string, isRunning boo
 	p.isRunning = isRunning
 	p.dead = dead
 	p.score = score
-	// mario src
 
 }
 
 func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.InitWindow(p.width, p.heigh, p.title)
+	rl.InitAudioDevice()
+	p.musicMenu = rl.LoadMusicStream("../audio/music/menu.mp3") // lance la musique mais ne se lance pas :
+	rl.PlayMusicStream(p.musicMenu)                             // permet de jouer la musique
+
 	// définit la taille de la fenetre
 	p.isRunning = true
-	p.texture = rl.LoadTexture("../assets/assets.png")
-	p.playerSrc = rl.NewRectangle(2, 192, 25, 27) // selectionne un bout d'image dans la sheet sprite
-	p.playerDest = rl.NewRectangle(0, 32, 64, 64) // met une zone ou afficher ce bout d'image
-	p.playerVector = rl.NewVector2(-(p.playerDest.Width), -(p.playerDest.Height)) // permet de lui donner une position
-	p.playerSpeed = 0.05
+	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
+	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
+	p.mapSrc = rl.NewRectangle(0, 0, 177, 177)
+	p.mapDest = rl.NewRectangle(0, 0, 177, 177)
+	p.playerSrc = rl.NewRectangle(-1, 195, 32, 32) // selectionne un bout d'image dans la sheet sprite
+	// il faudra crée la caméra quand on aura une map
+	p.playerDest = rl.NewRectangle(0, 32, 64, 64)                               // met une zone ou afficher ce bout d'image
+	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
+	p.playerSpeed = 0.15
+	// p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(p.heigh/2)),
+	// 	rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/2)), 0.0, 1.0)
+	for p.isRunning {
 
-	p.display()
+		p.input()
+		p.update()
+		p.render()
+
+	}
+	p.quit()
 	rl.SetExitKey(0)    // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
 
 }
-// _________________________________________________________________Menu_______________________________________________________________//
-// iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification
-// const actuelle dans une déclaration const (généralement entre parenthèses). Il est indexé à zéro.
-const (
-	MenuDisplay = iota
-	Game
-	Options
-)
-
-var currentGameState = MenuDisplay
-
-func (p *gameEngine) display() {
-
-	// defer rl.CloseWindow()
-
-	// rl.SetTargetFPS(60)
-
-	for p.isRunning {
-		switch currentGameState {
-		case MenuDisplay:
-			if rl.IsKeyReleased(rl.KeyEnter) {
-				currentGameState = Game
-			} else if rl.IsKeyReleased(rl.KeyO) {
-				currentGameState = Options
-			} else if rl.IsKeyReleased(rl.KeyEscape) {
-				p.quit()
-			}
-		case Game:
-			if rl.IsKeyReleased(rl.KeyEscape) {
-				currentGameState = MenuDisplay
-
-			}
-		case Options:
-			if rl.IsKeyReleased(rl.KeyEscape) {
-				currentGameState = MenuDisplay
-			}
-		}
-
-		rl.BeginDrawing()
-		rl.ClearBackground(rl.RayWhite)
-
-		switch currentGameState {
-		case MenuDisplay:
-			// Menue
-			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
-
-			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
-
-			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter :", 100, 450, 35, rl.White)
-
-			rl.ClearBackground(rl.DarkBlue)
-
-		case Game:
-			// JEUX
-			rl.ClearBackground(rl.Black)
-			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu :", 100, 150, 35, rl.White)
-			p.input()
-			p.update()
-			p.render()
-
-		case Options:
-			// OPTION //
-
-			rl.ClearBackground(rl.White)
-
-			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
-
-//ESSAIS DE BOUTTONS//
-			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
-				rl.DrawRectangle(15, 90, 50, 50, rl.White)
-				if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-				}
-			} else {
-				rl.DrawRectangle(15, 90, 50, 50, rl.LightGray)
-			}
-			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(70, 90, 50, 50)) {
-				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
-				if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
-				}
-			} else {
-				rl.DrawRectangle(70, 90, 50, 50, rl.LightGray)
-			}
-//ESSAIS DE BOUTTONS//
-// buttons := []struct {
-// 	Bounds rl.Rectangle
-// 	Text   string
-// }{
-// 	{rl.NewRectangle(screenWidth/20, screenHeight/20, 150, 40), "Back"},
-// 	{rl.NewRectangle(screenWidth-(150+screenWidth/20), screenHeight-(40+screenHeight/20), 150, 40), "Quit"},
-// }
-
-// for _, button := range buttons {
-// 	color := rl.Yellow
-// 	if rl.CheckCollisionPointRec(rl.GetMousePosition(), button.Bounds) {
-// 		color = rl.DarkGray
-// 		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-// 			switch button.Text {
-// 			case "Back":
-// 				currentScreen = 1
-// 			case "Quit":
-// 				rl.UnloadMusicStream(bgMusic)
-// 				rl.CloseAudioDevice()
-// 				rl.CloseWindow()
-// 				return
-// 			}
-			
-			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
-
-			// QUiTTEZ //
-			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu :", 300, 45, 35, rl.White)
-		}
-		rl.ClearBackground(rl.DarkBlue)
-
-		rl.EndDrawing()
-	}
-}
-
 
 func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
 		w.playerDest.Y -= w.playerSpeed
-	} 
+	}
 	if rl.IsKeyDown(rl.KeyDown) { // key left
 		w.playerDest.Y += w.playerSpeed
-	} 
+	}
 	if rl.IsKeyDown(rl.KeyLeft) { // key left
 		w.playerDest.X -= w.playerSpeed
-	} 
-	if  rl.IsKeyDown(rl.KeyRight) { // key left
+	}
+	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 	}
 }
 
-func (w *gameEngine) update() { // va définir les mouvements du personnage
-	w.isRunning = !rl.WindowShouldClose()
-
+func (p *gameEngine) update() { // va définir les mouvements du personnage
+	p.isRunning = !rl.WindowShouldClose()
+	rl.UpdateMusicStream(p.musicMenu)
+	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/2))
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
 
 func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire les dessins
-	// rl.BeginDrawing()
-	// rl.ClearBackground(rl.Black)
-
+	rl.BeginDrawing()
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
-	// //rl.DrawTexture(g.TxSprites, g.frameRec)
+	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}
 	// // destRecTest := rl.Rectangle{}
 	// // originTest := rl.Vector2{}
-
-	
-	rl.DrawTexturePro(g.texture, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
+	//rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
 	//rl.DrawTexture(g.texture,0,0,rl.White)
+	g.drawScene()
+	rl.EndDrawing()
 
+}
+func (g *gameEngine) drawScene() {
+	rl.DrawTexture(g.textureMap, -100, -50, rl.White)
 }
 
 func (p *gameEngine) quit() {
-	rl.UnloadTexture(p.texture)
+	rl.UnloadTexture(p.textureCharacter)
+	rl.UnloadTexture(p.textureMap)
+	rl.UnloadMusicStream(p.musicMenu)
+	rl.CloseAudioDevice()
 	rl.CloseWindow()
 }
+
+// _________________________________________________________________Menu_______________________________________________________________//
+// iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification
+// const actuelle dans une déclaration const (généralement entre parenthèses). Il est indexé à zéro.
+// const (
+// 	MenuDisplay = iota
+// 	Game
+// 	Options
+// )
+
+// var currentGameState = MenuDisplay
+
+// func (p *gameEngine) display() {
+// 	rl.UpdateMusicStream(p.musicMenu)
+// 	// defer rl.CloseWindow()
+
+// 	// rl.SetTargetFPS(60)
+// 	rl.BeginMode2D(p.cam2d)
+// 	for p.isRunning {
+
+// 		switch currentGameState {
+// 		case MenuDisplay:
+// 			if rl.IsKeyReleased(rl.KeyEnter) {
+// 				currentGameState = Game
+// 			} else if rl.IsKeyReleased(rl.KeyO) {
+// 				currentGameState = Options
+// 			} else if rl.IsKeyReleased(rl.KeyEscape) {
+// 				p.quit()
+// 			}
+// 		case Game:
+// 			if rl.IsKeyReleased(rl.KeyEscape) {
+// 				currentGameState = MenuDisplay
+
+// 			}
+// 		case Options:
+// 			if rl.IsKeyReleased(rl.KeyEscape) {
+// 				currentGameState = MenuDisplay
+// 			}
+// 		}
+
+// 		rl.BeginDrawing()
+// 		rl.ClearBackground(rl.RayWhite)
+
+// 		switch currentGameState {
+// 		case MenuDisplay:
+// 			// Menue
+// 			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
+
+// 			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
+
+// 			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter :", 100, 450, 35, rl.White)
+
+// 			rl.ClearBackground(rl.DarkBlue)
+
+// 		case Game:
+// 			// JEUX
+// 			rl.ClearBackground(rl.Black)
+// 			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu :", 10, 10, 13, rl.White)
+
+// 			p.input()
+// 			p.update()
+// 			p.render()
+
+// 		case Options:
+// 			// OPTION //
+
+// 			rl.ClearBackground(rl.White)
+
+// 			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
+
+// 			//ESSAIS DE BOUTTONS//
+// 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
+// 				rl.DrawRectangle(15, 90, 50, 50, rl.White)
+// 				// if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+// 				// }
+// 			} else {
+// 				rl.DrawRectangle(15, 90, 50, 50, rl.LightGray)
+// 			}
+// 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(70, 90, 50, 50)) {
+// 				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
+// 				// if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
+// 				// }
+// 			} else {
+// 				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
+// 			}
+// 			//ESSAIS DE BOUTTONS//
+// 			// buttons := []struct {
+// 			// 	Bounds rl.Rectangle
+// 			// 	Text   string
+// 			// }{
+// 			// 	{rl.NewRectangle(screenWidth/20, screenHeight/20, 150, 40), "Back"},
+// 			// 	{rl.NewRectangle(screenWidth-(150+screenWidth/20), screenHeight-(40+screenHeight/20), 150, 40), "Quit"},
+// 			// }
+
+// 			// for _, button := range buttons {
+// 			// 	color := rl.Yellow
+// 			// 	if rl.CheckCollisionPointRec(rl.GetMousePosition(), button.Bounds) {
+// 			// 		color = rl.DarkGray
+// 			// 		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+// 			// 			switch button.Text {
+// 			// 			case "Back":
+// 			// 				currentScreen = 1
+// 			// 			case "Quit":
+// 			// 				rl.UnloadMusicStream(bgMusic)
+// 			// 				rl.CloseAudioDevice()
+// 			// 				rl.CloseWindow()
+// 			// 				return
+// 			// 			}
+
+// 			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
+
+// 			// QUiTTEZ //
+// 			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu :", 300, 45, 35, rl.Brown)
+// 		}
+// 		rl.EndMode2D()
+// 		rl.EndDrawing()
+// 	}
+// }
