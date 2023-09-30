@@ -48,7 +48,7 @@ func main() {
 	var game gameEngine // défini game a la struct window
 	game.Init(1366, 768," Donkey Kong Mario", true, false, 0) // initialise la fenetre : donc attribue les valeurs automatiquement ?
 	// qu'est game.mario ?????????
-
+	rl.InitAudioDevice()
 	game.initGame()
 
 }
