@@ -104,8 +104,8 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 
 }
 func (g *gameEngine) drawScene() {
-	rl.DrawTexture(g.textureMap, 100, 50, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
+	rl.DrawTexture(g.textureMap, 100, 50, rl.White)
 }
 
 func (p *gameEngine) quit() {
