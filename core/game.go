@@ -36,12 +36,12 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 1.0)
 	
-		rl.InitAudioDevice()
-	p.musicMenu = rl.LoadMusicStream("../audio/peace.mp3")
-	p.musicIsPaused = false
+		// rl.InitAudioDevice()
+	p.musicMenu = rl.LoadMusicStream("../audio/peace.wav")
+	// p.musicIsPaused = false
 	rl.PlayMusicStream(p.musicMenu)
-	rl.SetMasterVolume(1)
-	rl.SetMusicVolume(p.musicMenu, 1)
+	rl.SetMasterVolume(50)
+	rl.SetMusicVolume(p.musicMenu, 50)
 	for p.isRunning {
 		//rl.UpdateMusicStream(p.musicMenu)
 		p.input()
