@@ -33,7 +33,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerSpeed = 0.15
 
 	
-	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(p.heigh/2)),
+	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 1.0)
 	
 		rl.InitAudioDevice()
