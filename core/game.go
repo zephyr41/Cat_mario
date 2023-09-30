@@ -21,25 +21,29 @@ func (p *gameEngine) Init(width int32, height int32, title string, isRunning boo
 
 func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.InitWindow(p.width, p.heigh, p.title)
-	rl.InitAudioDevice()
-	p.musicMenu = rl.LoadMusicStream("../audio/music/menu.mp3") // lance la musique mais ne se lance pas :
-	rl.PlayMusicStream(p.musicMenu)                             // permet de jouer la musique
-
-	// définit la taille de la fenetre
 	p.isRunning = true
-	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
+	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
 	p.mapSrc = rl.NewRectangle(0, 0, 177, 177)
 	p.mapDest = rl.NewRectangle(0, 0, 177, 177)
-	p.playerSrc = rl.NewRectangle(-1, 195, 32, 32) // selectionne un bout d'image dans la sheet sprite
+	p.playerSrc = rl.NewRectangle(1, 195, 32, 32) // selectionne un bout d'image dans la sheet sprite
 	// il faudra crée la caméra quand on aura une map
-	p.playerDest = rl.NewRectangle(0, 32, 64, 64)                               // met une zone ou afficher ce bout d'image
+	p.playerDest = rl.NewRectangle(100, 32, 64, 64)                             // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 	p.playerSpeed = 0.15
-	// p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(p.heigh/2)),
-	// 	rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/2)), 0.0, 1.0)
-	for p.isRunning {
 
+	
+	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(p.heigh/2)),
+		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/2)), 0.0, 1.0)
+	
+		rl.InitAudioDevice()
+	p.musicMenu = rl.LoadMusicStream("../audio/peace.mp3")
+	p.musicIsPaused = false
+	rl.PlayMusicStream(p.musicMenu)
+	rl.SetMasterVolume(1)
+	rl.SetMusicVolume(p.musicMenu, 1)
+	for p.isRunning {
+		//rl.UpdateMusicStream(p.musicMenu)
 		p.input()
 		p.update()
 		p.render()
@@ -65,11 +69,19 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 	}
+	if rl.IsKeyPressed(rl.KeyM) { // key left
+		w.musicIsPaused = !w.musicIsPaused
+	}
 }
 
 func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
 	rl.UpdateMusicStream(p.musicMenu)
+	if p.musicIsPaused {
+		rl.PauseMusicStream(p.musicMenu)
+	} else {
+		rl.ResumeMusicStream(p.musicMenu)
+	}
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/2))
 }
 
@@ -77,19 +89,23 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 
 func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire les dessins
 	rl.BeginDrawing()
+	rl.ClearBackground(rl.Black)
+	rl.BeginMode2D(g.cam2d)
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}
 	// // destRecTest := rl.Rectangle{}
 	// // originTest := rl.Vector2{}
-	//rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
+
 	//rl.DrawTexture(g.texture,0,0,rl.White)
 	g.drawScene()
+	rl.EndMode2D()
 	rl.EndDrawing()
 
 }
 func (g *gameEngine) drawScene() {
-	rl.DrawTexture(g.textureMap, -100, -50, rl.White)
+	rl.DrawTexture(g.textureMap, 100, 50, rl.White)
+	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
 }
 
 func (p *gameEngine) quit() {

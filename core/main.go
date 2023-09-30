@@ -19,14 +19,19 @@ type gameEngine struct {
 	//mario ObjectWhoMoove
 	//barril ObjectWhoMoove
 	musicMenu rl.Music
+	musicIsPaused bool
+
 	textureCharacter rl.Texture2D
 	textureMap rl.Texture2D
+
 	mapSrc rl.Rectangle
 	mapDest rl.Rectangle
+
 	playerSrc rl.Rectangle
 	playerDest rl.Rectangle
 	playerVector rl.Vector2
 	playerSpeed float32
+	
 	cam2d rl.Camera2D
 	isRunning bool
 
