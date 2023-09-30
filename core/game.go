@@ -34,7 +34,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(p.heigh/2)),
-		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/2)), 0.0, 1.0)
+		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 1.0)
 	
 		rl.InitAudioDevice()
 	p.musicMenu = rl.LoadMusicStream("../audio/peace.mp3")
@@ -82,7 +82,7 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	} else {
 		rl.ResumeMusicStream(p.musicMenu)
 	}
-	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/2))
+	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
