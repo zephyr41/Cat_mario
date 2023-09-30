@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -32,11 +34,10 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 	p.playerSpeed = 0.45
 
-	
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 1.0)
-	
-		// rl.InitAudioDevice()
+
+	// rl.InitAudioDevice()
 	p.musicMenu = rl.LoadMusicStream("../audio/peace.wav")
 	// p.musicIsPaused = false
 	rl.PlayMusicStream(p.musicMenu)
@@ -83,7 +84,7 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 	}
 	if rl.IsKeyPressed(rl.KeyM) { // key left
 		w.musicIsPaused = !w.musicIsPaused
-		
+
 		w.playerUp = true
 	}
 }
@@ -92,17 +93,29 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
 	p.playerSrc.X = 7
 	if p.playerMoving {
-		if p.playerUp{p.playerDest.Y -= p.playerSpeed}
-		if p.playerDown{p.playerDest.Y += p.playerSpeed}
-		if p.playerLeft{p.playerDest.X -= p.playerSpeed}
-		if p.playerRight{p.playerDest.X += p.playerSpeed}
-		if p.FrameCount % 32 == 1 {p.playerFrame++}
+		if p.playerUp {
+			p.playerDest.Y -= p.playerSpeed
+		}
+		if p.playerDown {
+			p.playerDest.Y += p.playerSpeed
+		}
+		if p.playerLeft {
+			p.playerDest.X -= p.playerSpeed
+		}
+		if p.playerRight {
+			p.playerDest.X += p.playerSpeed
+		}
+		if p.FrameCount%32 == 1 {
+			p.playerFrame++
+		}
 
 	}
 	p.FrameCount++
-	if p.playerFrame > 3 { p.playerFrame = 0}
-	p.playerSrc.X = p.playerSrc.Width*float32(p.playerFrame)
-	p.playerSrc.Y = p.playerSrc.Width*float32(p.playerDir)
+	if p.playerFrame > 3 {
+		p.playerFrame = 0
+	}
+	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame)
+	p.playerSrc.Y = p.playerSrc.Width * float32(p.playerDir)
 	rl.UpdateMusicStream(p.musicMenu)
 	if p.musicIsPaused {
 		rl.PauseMusicStream(p.musicMenu)
@@ -111,7 +124,7 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	}
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
-	p.playerUp, p.playerDown, p.playerRight,p.playerLeft = false,false,false,false
+	p.playerUp, p.playerDown, p.playerRight, p.playerLeft = false, false, false, false
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
@@ -135,6 +148,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 func (g *gameEngine) drawScene() {
 	rl.DrawTexture(g.textureMap, 100, 50, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
+	fmt.Println(rl.GetFPS())
 }
 
 func (p *gameEngine) quit() {
