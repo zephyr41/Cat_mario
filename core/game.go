@@ -59,29 +59,26 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
 		w.playerDest.Y -= w.playerSpeed
-		w.playerMoving = true
-		w.playerDir = 17
-		w.playerUp = true
-	}
-	if rl.IsKeyDown(rl.KeyDown) { // key left
+		w.playerMoving = true // dit que le joueur est en mouvement
+		w.playerDir = 17 // permet de set quel frame on veut dans la grille de sprite
+		w.playerUp = true // dit qu'il va en haut
+		// pareil pour tous
+	} else if rl.IsKeyDown(rl.KeyDown) { // key left
 		w.playerDest.Y += w.playerSpeed
 		w.playerMoving = true
-		w.playerDir = 0
 		w.playerDown = true
-	}
-	if rl.IsKeyDown(rl.KeyLeft) { // key left
+		w.playerDir = 18
+	} else if rl.IsKeyDown(rl.KeyLeft) { // key left
 		w.playerDest.X -= w.playerSpeed
 		w.playerMoving = true
-		w.playerDir = 7
+		w.playerDir = 5
 		w.playerLeft = true
-	}
-	if rl.IsKeyDown(rl.KeyRight) { // key left
+	} else if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 		w.playerMoving = true
 		w.playerRight = true
-		w.playerDir = 7
-	}
-	if rl.IsKeyPressed(rl.KeyM) { // key left
+		w.playerDir = 6
+	} else if rl.IsKeyPressed(rl.KeyM) { // key left
 		w.musicIsPaused = !w.musicIsPaused
 
 		w.playerUp = true
@@ -93,7 +90,7 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.playerSrc.X = 7
 	if p.playerMoving {
 		if p.playerUp {
-			p.playerDest.Y -= p.playerSpeed
+			p.playerDest.Y -= p.playerSpeed // définit par rapport a renderTexture pro pour déduire la vitesse et la re atribuée
 		}
 		if p.playerDown {
 			p.playerDest.Y += p.playerSpeed
