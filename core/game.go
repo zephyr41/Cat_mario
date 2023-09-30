@@ -148,6 +148,7 @@ func (g *gameEngine) drawScene() {
 	fmt.Println(rl.GetFPS())
 	rl.DrawTexture(g.textureMap, 100, 50, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
+	fmt.Println(rl.GetFPS())
 }
 
 func (p *gameEngine) quit() {
