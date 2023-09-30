@@ -31,10 +31,13 @@ type gameEngine struct {
 	playerDest rl.Rectangle
 	playerVector rl.Vector2
 	playerSpeed float32
-	
+	playerMoving bool
+	playerDir int
+	playerUp,playerDown,playerRight,playerLeft bool
 	cam2d rl.Camera2D
 	isRunning bool
-
+	playerFrame int
+	FrameCount int
 
 
 }

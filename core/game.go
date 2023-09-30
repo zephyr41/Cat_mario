@@ -30,7 +30,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	// il faudra crée la caméra quand on aura une map
 	p.playerDest = rl.NewRectangle(100, 32, 64, 64)                             // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
-	p.playerSpeed = 0.15
+	p.playerSpeed = 0.45
 
 	
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
@@ -59,23 +59,50 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
 		w.playerDest.Y -= w.playerSpeed
+		w.playerMoving = true
+		w.playerDir = 17
+		w.playerUp = true
 	}
 	if rl.IsKeyDown(rl.KeyDown) { // key left
 		w.playerDest.Y += w.playerSpeed
+		w.playerMoving = true
+		w.playerDir = 0
+		w.playerDown = true
 	}
 	if rl.IsKeyDown(rl.KeyLeft) { // key left
 		w.playerDest.X -= w.playerSpeed
+		w.playerMoving = true
+		w.playerDir = 7
+		w.playerLeft = true
 	}
 	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
+		w.playerMoving = true
+		w.playerRight = true
+		w.playerDir = 7
 	}
 	if rl.IsKeyPressed(rl.KeyM) { // key left
 		w.musicIsPaused = !w.musicIsPaused
+		
+		w.playerUp = true
 	}
 }
 
 func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
+	p.playerSrc.X = 7
+	if p.playerMoving {
+		if p.playerUp{p.playerDest.Y -= p.playerSpeed}
+		if p.playerDown{p.playerDest.Y += p.playerSpeed}
+		if p.playerLeft{p.playerDest.X -= p.playerSpeed}
+		if p.playerRight{p.playerDest.X += p.playerSpeed}
+		if p.FrameCount % 32 == 1 {p.playerFrame++}
+
+	}
+	p.FrameCount++
+	if p.playerFrame > 3 { p.playerFrame = 0}
+	p.playerSrc.X = p.playerSrc.Width*float32(p.playerFrame)
+	p.playerSrc.Y = p.playerSrc.Width*float32(p.playerDir)
 	rl.UpdateMusicStream(p.musicMenu)
 	if p.musicIsPaused {
 		rl.PauseMusicStream(p.musicMenu)
@@ -83,6 +110,8 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 		rl.ResumeMusicStream(p.musicMenu)
 	}
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
+	p.playerMoving = false
+	p.playerUp, p.playerDown, p.playerRight,p.playerLeft = false,false,false,false
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
@@ -104,8 +133,8 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 
 }
 func (g *gameEngine) drawScene() {
-	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
 	rl.DrawTexture(g.textureMap, 100, 50, rl.White)
+	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
 }
 
 func (p *gameEngine) quit() {
