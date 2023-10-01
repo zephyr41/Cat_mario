@@ -35,7 +35,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	p.objDest = rl.NewRectangle(0, 0, 306, 166)
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
-
+	p.playerCanJump = false
 	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
 	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
 	p.gargantuaDest = rl.NewRectangle(-30, -700, 700, 700)
@@ -43,12 +43,12 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
-	p.playerDest = rl.NewRectangle(100, 32, 64, 64)                             // met une zone ou afficher ce bout d'image
+	p.playerDest = rl.NewRectangle(0, -120, 64, 64)                             // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 	p.playerSpeed = 11.45
 	p.tileSrc = rl.NewRectangle(1550, 110, 113, 185)
 	p.tileDest = rl.NewRectangle(0, 0, 113, 132)
-
+	p.gravity = 30
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 1.0)
 
@@ -110,14 +110,14 @@ func (p *gameEngine) loadMap() {
 func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
-		w.playerDest.Y -= w.playerSpeed
-		w.playerMoving = true // dit que le joueur est en mouvement
-		w.playerDir = 17      // permet de set quel frame on veut dans la grille de sprite
-		w.playerUp = true     // dit qu'il va en haut
+		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
+		w.playerUp = true // dit qu'il va en haut
+		w.playerCanJump = true
 		// pareil pour tous
 	}
 	if rl.IsKeyDown(rl.KeyDown) { // key left
 		w.playerDest.Y += w.playerSpeed
+
 		w.playerMoving = true
 		w.playerDown = true
 		w.playerDir = 18
@@ -134,6 +134,7 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		w.playerRight = true
 		w.playerDir = 6
 	}
+
 	if rl.IsKeyPressed(rl.KeyM) { // key left
 		w.musicIsPaused = !w.musicIsPaused
 
@@ -145,11 +146,18 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
+	fmt.Println(p.playerCanJump)
 	p.framecountGargantua += 1
-	if p.playerMoving {
-		if p.playerUp {
-			p.playerDest.Y -= p.playerSpeed // définit par rapport a renderTexture pro pour déduire la vitesse et la re atribuée
+	if p.playerCanJump {
+		p.playerDest.Y -= 40
+		for p.FrameCount%8 == 1 {
+			p.playerFrame++
+			
 		}
+		p.playerCanJump = false
+	}
+	if p.playerMoving {
+
 		if p.playerDown {
 			p.playerDest.Y += p.playerSpeed
 		}
@@ -175,6 +183,11 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 
 	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame)
 	p.playerSrc.Y = p.playerSrc.Width * float32(p.playerDir)
+	if rl.CheckCollisionRecs(p.playerDest, p.plateformSpriteDest) {
+
+		p.playerDest.Y -= 90
+
+	}
 	rl.UpdateMusicStream(p.musicMenu)
 	if p.musicIsPaused {
 		rl.PauseMusicStream(p.musicMenu)
@@ -206,14 +219,12 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 
 }
 func (g *gameEngine) drawScene() {
-	fmt.Println("taille hauteur", g.mapH)
-	fmt.Println("taille largeur ", g.mapW)
 	for i := 0; i < len(g.tileMap); i++ { // sert à mapper la carte :
 		if g.tileMap[i] != 0 {
 			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
 			g.tileDest.Y = g.tileDest.Height * float32(i%g.mapH)
-			g.objDest.X =  g.tileDest.X
-			g.objDest.Y =  g.tileDest.Y
+			g.objDest.X = g.tileDest.X
+			g.objDest.Y = g.tileDest.Y
 			if g.srcMap[i] == "p" {
 				g.tex = g.textureMap
 				g.objSrc = g.plateformSpriteSrc
@@ -221,12 +232,12 @@ func (g *gameEngine) drawScene() {
 			}
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
-			rl.DrawTexturePro(g.textureMap, g.objSrc, g.objDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 
 		}
 
 	}
 	// 9m35
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 3, rl.White)
 	//rl.DrawTexturePro(g.textureMap, g.objSrc, g.objDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario

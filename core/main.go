@@ -61,6 +61,8 @@ type gameEngine struct {
 	tileMap []int
 	tileMapLink string
 	//srcMap []string
+	gravity int
+	playerCanJump bool
 	mapW, mapH int
 }
 
