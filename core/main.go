@@ -24,10 +24,14 @@ type gameEngine struct {
 	textureCharacter rl.Texture2D
 	textureMap rl.Texture2D
 
-	mapSrc rl.Rectangle
-	mapDest rl.Rectangle
+	objSrc rl.Rectangle
+	objDest rl.Rectangle
 	srcMap  []string
-	plateformSprite rl.Rectangle
+	plateformSpriteSrc rl.Rectangle
+	plateformSpriteDest rl.Rectangle
+
+	wallSpriteSrc rl.Rectangle
+	littleSpriteSrc rl.Rectangle
 	tex rl.Texture2D
 
 	playerSrc rl.Rectangle

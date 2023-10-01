@@ -30,15 +30,16 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.isRunning = true
 	p.tex = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
-	p.mapSrc = rl.NewRectangle(239, 1527, 1224, 500)
-	p.plateformSprite = rl.NewRectangle(0, 0, 306, 166)
+	p.plateformSpriteSrc = rl.NewRectangle(239, 1527, 1224, 500)
+	p.plateformSpriteDest = rl.NewRectangle(0, 0, 306, 166)
+
+	p.objDest = rl.NewRectangle(0, 0, 306, 166)
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
 
 	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
 	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
 	p.gargantuaDest = rl.NewRectangle(-30, -700, 700, 700)
 	p.gargantuaSpeed = 1
-	p.plateformSprite = rl.NewRectangle(0, 0, 306, 166)
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
@@ -211,15 +212,23 @@ func (g *gameEngine) drawScene() {
 		if g.tileMap[i] != 0 {
 			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
 			g.tileDest.Y = g.tileDest.Height * float32(i%g.mapH)
-			if (g.srcMap[i] == "g" ) {g.tex = g.textureMap}
+			g.objDest.X =  g.tileDest.X
+			g.objDest.Y =  g.tileDest.Y
+			if g.srcMap[i] == "p" {
+				g.tex = g.textureMap
+				g.objSrc = g.plateformSpriteSrc
+				g.objDest = g.plateformSpriteDest
+			}
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
+			rl.DrawTexturePro(g.textureMap, g.objSrc, g.objDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
+
 		}
 
 	}
 	// 9m35
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 3, rl.White)
-	rl.DrawTexturePro(g.textureMap, g.mapSrc, g.mapDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
+	//rl.DrawTexturePro(g.textureMap, g.objSrc, g.objDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
 
 }
