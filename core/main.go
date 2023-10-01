@@ -26,6 +26,7 @@ type gameEngine struct {
 
 	mapSrc rl.Rectangle
 	mapDest rl.Rectangle
+	Srcmap  []string
 
 	playerSrc rl.Rectangle
 	playerDest rl.Rectangle
@@ -38,6 +39,11 @@ type gameEngine struct {
 	isRunning bool
 	playerFrame int
 	FrameCount int
+	gargantuaDest rl.Rectangle
+	gargantuaTex rl.Texture2D
+	gargantuaSrc rl.Rectangle
+	gargantuaSpeed int
+	framecountGargantua int
 
 	//mapFile  string
 	//playerCanJump bool
