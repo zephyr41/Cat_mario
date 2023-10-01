@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -29,16 +28,23 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.InitWindow(p.width, p.heigh, p.title)
 	rl.SetTargetFPS(60) // définit les fps a x
 	p.isRunning = true
-	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
+	p.tex = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
 	p.mapSrc = rl.NewRectangle(239, 1527, 1224, 500)
-	p.mapDest = rl.NewRectangle(0, 0, 306, 166)
+	p.plateformSprite = rl.NewRectangle(0, 0, 306, 166)
+	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
+
+	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
+	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
+	p.gargantuaDest = rl.NewRectangle(-30, -700, 700, 700)
+	p.gargantuaSpeed = 1
+	p.plateformSprite = rl.NewRectangle(0, 0, 306, 166)
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
 	p.playerDest = rl.NewRectangle(100, 32, 64, 64)                             // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
-	p.playerSpeed = 1.45
+	p.playerSpeed = 11.45
 	p.tileSrc = rl.NewRectangle(1550, 110, 113, 185)
 	p.tileDest = rl.NewRectangle(0, 0, 113, 132)
 
@@ -64,35 +70,39 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 func (p *gameEngine) loadMap() {
 	p.tileMapLink = "../assets/one.map"
-	file, err := ioutil.ReadFile(p.tileMapLink)
+	file, err := os.ReadFile(p.tileMapLink)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
 	sliced := strings.Split(remNewLines, " ")
+
 	p.mapW = -1
 	p.mapH = -1
 
 	for i := 0; i < len(sliced); i++ {
-		s, _ :=  strconv.ParseInt(sliced[i],10,64)
+
+		s, _ := strconv.ParseInt(sliced[i], 10, 64)
+		//fmt.Println("slice", i, sliced[i], "s", s)
 		m := int(s)
 		if p.mapW == -1 {
 			p.mapW = m
-		} else if p.mapH == -1{
+
+		} else if p.mapH == -1 {
 			p.mapH = m
-		} else i < (p.mapW*mapH+2) {
+		} else if i < p.mapW*p.mapH+2 {
 			p.tileMap = append(p.tileMap, m)
 		} else {
-			src map = append(p)
+			p.srcMap = append(p.srcMap, sliced[i])
 		}
-	} 
-	if len(p.tileMap) > p.mapW*p.mapH+2 {p.tileMap = p.tileMap[:len(p.tileMap)-1] }
-	
 
-	// for i := 0; i < (p.mapH * p.mapW); i++ {
-	// 	p.tileMap = append(p.tileMap, 1)
-	// }
+	}
+	if len(p.tileMap) > p.mapW*p.mapH {
+		p.tileMap = p.tileMap[:len(p.tileMap)-1]
+	}
+	// p.mapW = 5
+	// p.mapH = 5
 
 }
 
@@ -104,22 +114,26 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		w.playerDir = 17      // permet de set quel frame on veut dans la grille de sprite
 		w.playerUp = true     // dit qu'il va en haut
 		// pareil pour tous
-	} else if rl.IsKeyDown(rl.KeyDown) { // key left
+	}
+	if rl.IsKeyDown(rl.KeyDown) { // key left
 		w.playerDest.Y += w.playerSpeed
 		w.playerMoving = true
 		w.playerDown = true
 		w.playerDir = 18
-	} else if rl.IsKeyDown(rl.KeyLeft) { // key left
+	}
+	if rl.IsKeyDown(rl.KeyLeft) { // key left
 		w.playerDest.X -= w.playerSpeed
 		w.playerMoving = true
 		w.playerDir = 5
 		w.playerLeft = true
-	} else if rl.IsKeyDown(rl.KeyRight) { // key left
+	}
+	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 		w.playerMoving = true
 		w.playerRight = true
 		w.playerDir = 6
-	} else if rl.IsKeyPressed(rl.KeyM) { // key left
+	}
+	if rl.IsKeyPressed(rl.KeyM) { // key left
 		w.musicIsPaused = !w.musicIsPaused
 
 		w.playerUp = true
@@ -128,7 +142,9 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 
 func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
+	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
+	p.framecountGargantua += 1
 	if p.playerMoving {
 		if p.playerUp {
 			p.playerDest.Y -= p.playerSpeed // définit par rapport a renderTexture pro pour déduire la vitesse et la re atribuée
@@ -151,6 +167,11 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	if p.playerFrame > 3 {
 		p.playerFrame = 0
 	}
+	if p.framecountGargantua%12 == 1 {
+		p.gargantuaSrc.X += 200
+		p.gargantuaSrc.Y += 200
+	}
+
 	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame)
 	p.playerSrc.Y = p.playerSrc.Width * float32(p.playerDir)
 	rl.UpdateMusicStream(p.musicMenu)
@@ -170,6 +191,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
 	rl.BeginMode2D(g.cam2d)
+	rl.DrawText("CAT SPACER<", -100, -550, 35, rl.White)
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}
@@ -183,18 +205,20 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 
 }
 func (g *gameEngine) drawScene() {
-
-	rl.DrawTexture(g.textureMap, 100, 50, rl.White)
-	for i := 0; i < len(g.tileMap); i++ {
+	fmt.Println("taille hauteur", g.mapH)
+	fmt.Println("taille largeur ", g.mapW)
+	for i := 0; i < len(g.tileMap); i++ { // sert à mapper la carte :
 		if g.tileMap[i] != 0 {
 			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
 			g.tileDest.Y = g.tileDest.Height * float32(i%g.mapH)
+			if (g.srcMap[i] == "g" ) {g.tex = g.textureMap}
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 		}
 
 	}
-
+	// 9m35
+	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 3, rl.White)
 	rl.DrawTexturePro(g.textureMap, g.mapSrc, g.mapDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
 
@@ -203,6 +227,7 @@ func (g *gameEngine) drawScene() {
 func (p *gameEngine) quit() {
 	rl.UnloadTexture(p.textureCharacter)
 	rl.UnloadTexture(p.textureMap)
+	rl.UnloadTexture(p.gargantuaTex)
 	rl.UnloadMusicStream(p.musicMenu)
 	rl.CloseAudioDevice()
 	rl.CloseWindow()
