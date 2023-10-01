@@ -28,15 +28,17 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.InitWindow(p.width, p.heigh, p.title)
 	rl.SetTargetFPS(60) // définit les fps a x
 	p.isRunning = true
-	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
+	p.tex = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
 	p.mapSrc = rl.NewRectangle(239, 1527, 1224, 500)
-	p.mapDest = rl.NewRectangle(0, 0, 306, 166)
+	p.plateformSprite = rl.NewRectangle(0, 0, 306, 166)
+	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
 
 	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
 	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
 	p.gargantuaDest = rl.NewRectangle(-30, -700, 700, 700)
 	p.gargantuaSpeed = 1
+	p.plateformSprite = rl.NewRectangle(0, 0, 306, 166)
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
@@ -92,7 +94,7 @@ func (p *gameEngine) loadMap() {
 		} else if i < p.mapW*p.mapH+2 {
 			p.tileMap = append(p.tileMap, m)
 		} else {
-			p.Srcmap = append(p.Srcmap, sliced[i])
+			p.srcMap = append(p.srcMap, sliced[i])
 		}
 
 	}
@@ -209,6 +211,7 @@ func (g *gameEngine) drawScene() {
 		if g.tileMap[i] != 0 {
 			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
 			g.tileDest.Y = g.tileDest.Height * float32(i%g.mapH)
+			if (g.srcMap[i] == "g" ) {g.tex = g.textureMap}
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 		}

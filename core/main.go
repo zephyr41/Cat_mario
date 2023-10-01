@@ -26,7 +26,9 @@ type gameEngine struct {
 
 	mapSrc rl.Rectangle
 	mapDest rl.Rectangle
-	Srcmap  []string
+	srcMap  []string
+	plateformSprite rl.Rectangle
+	tex rl.Texture2D
 
 	playerSrc rl.Rectangle
 	playerDest rl.Rectangle
