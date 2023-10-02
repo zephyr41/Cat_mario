@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -31,32 +28,33 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.tex = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
 	p.plateformSpriteSrc = rl.NewRectangle(239, 1527, 1224, 500)
-	p.plateformSpriteDest = rl.NewRectangle(0, 0, 306, 166)
+	p.plateformSpriteDest = rl.NewRectangle(0, 0, 100, 100)
 
-	p.objDest = rl.NewRectangle(0, 0, 306, 166)
+	//p.objDest = rl.NewRectangle(0, 0, 306, 166)
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.playerCanJump = false
+	p.playerIsJumping = false
 	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
 	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
-	p.gargantuaDest = rl.NewRectangle(-30, -700, 700, 700)
+	p.gargantuaDest = rl.NewRectangle(0, 0, 700, 700)
 	p.gargantuaSpeed = 1
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
-	p.playerDest = rl.NewRectangle(0, -120, 64, 64)                             // met une zone ou afficher ce bout d'image
+	p.playerDest = rl.NewRectangle(0, 0, 32, 32)                                // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
-	p.playerSpeed = 11.45
-	p.tileSrc = rl.NewRectangle(1550, 110, 113, 185)
-	p.tileDest = rl.NewRectangle(0, 0, 113, 132)
+	p.playerSpeed = 1.45
+	// p.tileSrc = rl.NewRectangle(1550, 110, 113, 185)
+	// p.tileDest = rl.NewRectangle(0, 0, 153, 83)
 	p.gravity = 30
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
-		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 1.0)
+		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 3.0)
 
 	// rl.InitAudioDevice()
 	//p.musicMenu = rl.LoadMusicStream("../audio/peace.wav")
 	// p.musicIsPaused = false
 	//rl.PlayMusicStream(p.musicMenu)
-	p.loadMap()
+	//p.loadMap()
 	for p.isRunning {
 		//rl.UpdateMusicStream(p.musicMenu)
 		p.input()
@@ -69,50 +67,51 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 }
 
-func (p *gameEngine) loadMap() {
-	p.tileMapLink = "../assets/one.map"
-	file, err := os.ReadFile(p.tileMapLink)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	remNewLines := strings.Replace(string(file), "\n", " ", -1)
-	sliced := strings.Split(remNewLines, " ")
+// func (p *gameEngine) loadMap() {
+// 	p.tileMapLink = "../assets/one.map"
+// 	file, err := os.ReadFile(p.tileMapLink)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		os.Exit(1)
+// 	}
+// 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
+// 	sliced := strings.Split(remNewLines, " ")
 
-	p.mapW = -1
-	p.mapH = -1
+// 	p.mapW = -1
+// 	p.mapH = -1
 
-	for i := 0; i < len(sliced); i++ {
+// 	for i := 0; i < len(sliced); i++ {
 
-		s, _ := strconv.ParseInt(sliced[i], 10, 64)
-		//fmt.Println("slice", i, sliced[i], "s", s)
-		m := int(s)
-		if p.mapW == -1 {
-			p.mapW = m
+// 		s, _ := strconv.ParseInt(sliced[i], 10, 64)
+// 		//fmt.Println("slice", i, sliced[i], "s", s)
+// 		m := int(s)
+// 		if p.mapW == -1 {
+// 			p.mapW = m
 
-		} else if p.mapH == -1 {
-			p.mapH = m
-		} else if i < p.mapW*p.mapH+2 {
-			p.tileMap = append(p.tileMap, m)
-		} else {
-			p.srcMap = append(p.srcMap, sliced[i])
-		}
+// 		} else if p.mapH == -1 {
+// 			p.mapH = m
+// 		} else if i < p.mapW*p.mapH+2 {
+// 			p.tileMap = append(p.tileMap, m)
+// 		} else {
+// 			p.srcMap = append(p.srcMap, sliced[i])
+// 		}
 
-	}
-	if len(p.tileMap) > p.mapW*p.mapH {
-		p.tileMap = p.tileMap[:len(p.tileMap)-1]
-	}
-	// p.mapW = 5
-	// p.mapH = 5
+// 	}
+// 	if len(p.tileMap) > p.mapW*p.mapH {
+// 		p.tileMap = p.tileMap[:len(p.tileMap)-1]
+// 	}
+// 	// p.mapW = 5
+// 	// p.mapH = 5
 
-}
+// }
 
 func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
-		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
+		w.playerDest.Y -= w.playerSpeed
 		w.playerUp = true // dit qu'il va en haut
 		w.playerCanJump = true
+		w.playerDir = 17 // permet de set quel frame on veut dans la grille de sprite
 		// pareil pour tous
 	}
 	if rl.IsKeyDown(rl.KeyDown) { // key left
@@ -147,16 +146,15 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
 	fmt.Println(p.playerCanJump)
-	p.framecountGargantua += 1
-	if p.playerCanJump {
-		p.playerDest.Y -= 40
-		for p.FrameCount%8 == 1 {
-			p.playerFrame++
-			
-		}
-		p.playerCanJump = false
-	}
+	// p.framecountGargantua += 1
+	// if !p.playerCanJump {
+
+	// }
 	if p.playerMoving {
+
+		if p.playerUp {
+			p.playerDest.Y -= p.playerSpeed
+		}
 
 		if p.playerDown {
 			p.playerDest.Y += p.playerSpeed
@@ -183,20 +181,23 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 
 	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame)
 	p.playerSrc.Y = p.playerSrc.Width * float32(p.playerDir)
-	if rl.CheckCollisionRecs(p.playerDest, p.plateformSpriteDest) {
-
-		p.playerDest.Y -= 90
-
-	}
+	
 	rl.UpdateMusicStream(p.musicMenu)
 	if p.musicIsPaused {
 		rl.PauseMusicStream(p.musicMenu)
 	} else {
 		rl.ResumeMusicStream(p.musicMenu)
 	}
+	if rl.CheckCollisionRecs(p.playerDest, p.plateformSpriteDest) {
+		// p.playerDest.Y -= p.plateformSpriteSrc.Y - 4
+		fmt.Println("colisision")
+
+	}
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
 	p.playerUp, p.playerDown, p.playerRight, p.playerLeft = false, false, false, false
+	p.playerCanJump = false
+	p.playerIsJumping = false
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
@@ -205,7 +206,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
 	rl.BeginMode2D(g.cam2d)
-	rl.DrawText("CAT SPACER<", -100, -550, 35, rl.White)
+	rl.DrawText("CAT SPACER<", 0, 0, 35, rl.White)
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}
@@ -219,28 +220,28 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 
 }
 func (g *gameEngine) drawScene() {
-	for i := 0; i < len(g.tileMap); i++ { // sert à mapper la carte :
-		if g.tileMap[i] != 0 {
-			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
-			g.tileDest.Y = g.tileDest.Height * float32(i%g.mapH)
-			g.objDest.X = g.tileDest.X
-			g.objDest.Y = g.tileDest.Y
-			if g.srcMap[i] == "p" {
-				g.tex = g.textureMap
-				g.objSrc = g.plateformSpriteSrc
-				g.objDest = g.plateformSpriteDest
-			}
-			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
-			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
+	// for i := 0; i < len(g.tileMap); i++ { // sert à mapper la carte :
+	// 	if g.tileMap[i] != 0 {
+	// 		g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
+	// 		g.tileDest.Y = g.tileDest.Height * float32(i%g.mapH)
+	// 		g.objDest.X = g.tileDest.X
+	// 		g.objDest.Y = g.tileDest.Y
+	// 		if g.srcMap[i] == "p" {
+	// 			g.tex = g.textureMap
+	// 			g.objSrc = g.plateformSpriteSrc
+	// 			g.objDest = g.plateformSpriteDest
+	// 		}
+	// 		g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
+	// 		g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 
-		}
+	// 	}
 
-	}
-	// 9m35
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
-	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 3, rl.White)
-	//rl.DrawTexturePro(g.textureMap, g.objSrc, g.objDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
-	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 2, rl.White) // drawTextureMario
+	// }
+	// 
+	//rl.DrawRectangle()
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
+	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 0, rl.White)
+	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.Red) // drawTextureMario
 
 }
 
