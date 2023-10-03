@@ -87,12 +87,6 @@ func (p *gameEngine) loadMap() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	const mapPath = "..assets/cat-mario.tmx"
-
-	fmt.Println("Map width:", p.mapFile.Width)
-	fmt.Println("Map height:", p.mapFile.Height)
-	fmt.Println("Map Link", tileMapLink)
-	fmt.Println("Map File", mapFile)
 
 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
 	sliced := strings.Split(remNewLines, " ")
