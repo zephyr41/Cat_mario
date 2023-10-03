@@ -59,9 +59,9 @@ type gameEngine struct {
 	hitboxX float32
 	hitboxY float32
 	adjustedHitbox rl.Rectangle
-	mapFile  string
-	playerCanJump bool
-	timePlayed float32
+	//mapFile  string
+	//playerCanJump bool
+	//timePlayed float32
 
 
 	tileDest rl.Rectangle
