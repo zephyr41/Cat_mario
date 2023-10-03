@@ -15,6 +15,8 @@ type gameEngine struct {
 	title string
 	//maxBarril int
 	score int
+	test1 [4]float32
+	testRectangel rl.Rectangle
 	dead bool
 	//mario ObjectWhoMoove
 	//barril ObjectWhoMoove
@@ -52,7 +54,11 @@ type gameEngine struct {
 	gargantuaSrc rl.Rectangle
 	gargantuaSpeed int
 	framecountGargantua int
-
+	hitboxHeight float32
+	hitboxWidth float32
+	hitboxX float32
+	hitboxY float32
+	adjustedHitbox rl.Rectangle
 	//mapFile  string
 	//playerCanJump bool
 	//timePlayed float32
