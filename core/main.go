@@ -72,6 +72,8 @@ type gameEngine struct {
     gravity int
     playerCanJump bool
     mapW, mapH int
+	Width string
+	Height string
 }
 
 
