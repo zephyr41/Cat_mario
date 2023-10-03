@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -81,48 +78,48 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 }
 
-func (p *gameEngine) loadMap() {
-	file, err := os.ReadFile(p.tileMapLink)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	const mapPath = "..assets/cat-mario.tmx"
+// func (p *gameEngine) loadMap() {
+// 	file, err := os.ReadFile(p.tileMapLink)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		os.Exit(1)
+// 	}
+// 	const mapPath = "..assets/cat-mario.tmx"
 
-	fmt.Println("Map width:", p.mapFile.Width)
-	fmt.Println("Map height:", p.mapFile.Height)
-	fmt.Println("Map Link", tileMapLink)
-	fmt.Println("Map File", mapFile)
+// 	// fmt.Println("Map width:", p.mapFile.Width)
+// 	// fmt.Println("Map height:", p.mapFile.Height)
+// 	// fmt.Println("Map Link", tileMapLink)
+// 	// fmt.Println("Map File", mapFile)
 
-	remNewLines := strings.Replace(string(file), "\n", " ", -1)
-	sliced := strings.Split(remNewLines, " ")
+// 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
+// 	sliced := strings.Split(remNewLines, " ")
 
-	p.mapW = -1
-	p.mapH = -1
+// 	p.mapW = -1
+// 	p.mapH = -1
 
-	for i := 0; i < len(sliced); i++ {
+// 	for i := 0; i < len(sliced); i++ {
 
-		s, _ := strconv.ParseInt(sliced[i], 10, 64)
-		fmt.Println("slice", i, sliced[i], "s", s)
-		m := int(s)
-		if p.mapW == -1 {
-			p.mapW = m
+// 		s, _ := strconv.ParseInt(sliced[i], 10, 64)
+// 		fmt.Println("slice", i, sliced[i], "s", s)
+// 		m := int(s)
+// 		if p.mapW == -1 {
+// 			p.mapW = m
 
-		} else if p.mapH == -1 {
-			p.mapH = m
-		} else if i < p.mapW*p.mapH+2 {
-			p.tileMap = append(p.tileMap, m)
-		} else {
-			p.srcMap = append(p.srcMap, sliced[i])
-		}
-		if len(p.tileMap) > p.mapW*p.mapH {
-			p.tileMap = p.tileMap[:len(p.tileMap)-1]
-		}
-		p.mapW = 5
-		p.mapH = 5
+// 		} else if p.mapH == -1 {
+// 			p.mapH = m
+// 		} else if i < p.mapW*p.mapH+2 {
+// 			p.tileMap = append(p.tileMap, m)
+// 		} else {
+// 			p.srcMap = append(p.srcMap, sliced[i])
+// 		}
+// 		if len(p.tileMap) > p.mapW*p.mapH {
+// 			p.tileMap = p.tileMap[:len(p.tileMap)-1]
+// 		}
+// 		p.mapW = 5
+// 		p.mapH = 5
 
-	}
-}
+// 	}
+// }
 
 func (w *gameEngine) input() { // récupère les inputs de la map
 
@@ -182,16 +179,16 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 		if p.playerCanJump && !p.playerIsJumping {
 			if p.playerUp {
 				fmt.Println("le joueur appuie sur haut")
-				if p.FrameCount%8 == 1 {
-					p.playerFrame++
-					p.playerDest.Y -= 30
-				}
-			}
 
+				
+				if p.FrameCount%8 == 1 {
+				p.playerFrame++				
+				}
 		}
 		p.playerCanJump = false
 		p.playerIsJumping = true
 	}
+}
 	// if !p.playerIsJumping && p.playerDest.Y <= p.plateformSpriteDest.Y{
 	// 	for p.hitboxY < p.plateformSpriteDest.Y{
 	// 		p.playerDest.Y -= 10
