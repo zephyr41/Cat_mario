@@ -204,11 +204,11 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	}
 	//adjustedPlayerDest := rl.NewRectangle(p.playerDest.X-p.playerDest.Width/2, p.playerDest.Y-p.playerDest.Height/2, p.playerDest.Width, p.playerDest.Height)
 
-	// if rl.CheckCollisionRecs(adjustedPlayerDest, p.testRectangel) {
-	// 	// p.playerDest.Y -= p.plateformSpriteSrc.Y - 4
-	// 	fmt.Println("colisision")
+	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) {
+		// p.playerDest.Y -= p.plateformSpriteSrc.Y - 4
+		fmt.Println("colisision")
 
-	// }
+	}
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
 	p.playerUp, p.playerDown, p.playerRight, p.playerLeft = false, false, false, false
@@ -267,7 +267,7 @@ func (g *gameEngine) drawScene() {
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
 	rl.DrawRectangleLines(int32(g.playerDest.X), int32(g.playerDest.Y), int32(g.playerDest.X+g.playerDest.Width), int32(g.playerDest.Y+g.playerDest.Height), rl.Blue)
 
-	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0),0, rl.Red)
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0),0, rl.Red)
 	//rl.DrawTexturePro(g.gargantuaTex, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
 	//rl.DrawRectangleV(rl.NewVector2(g.plateformSpriteDest.X,g.plateformSpriteDest.Y ), rl.NewVector2(g.plateformSpriteDest.Width,g.plateformSpriteDest.Height ),rl.Beige)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)
