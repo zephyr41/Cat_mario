@@ -3,104 +3,106 @@ package main
 import rl "github.com/gen2brain/raylib-go/raylib"
 
 type ObjectWhoMoove struct {
-    Position rl.Vector2
-        
-                               // de tel objet c'est ça
-                               // objectif, en affiché un simple
+	Position rl.Vector2
+
+	// de tel objet c'est ça
+	// objectif, en affiché un simple
 }
 
 type gameEngine struct {
-/* afficher l'explication
-##########################################################
-#          TOUT EN RAPPORT AVEC LA MAP                   #           
-#     Largeur, music, la partie est elle en cours...     #
-##########################################################
-*/
-	width int32
-	heigh int32
-	title string
-	score int
-	test1 [4]float32
-	dead bool
-	musicMenu rl.Music
+	/* afficher l'explication
+	   ##########################################################
+	   #          TOUT EN RAPPORT AVEC LA MAP                   #
+	   #     Largeur, music, la partie est elle en cours...     #
+	   ##########################################################
+	*/
+	width         int32
+	heigh         int32
+	title         string
+	score         int
+	test1         [4]float32
+	dead          bool
+	musicMenu     rl.Music
 	musicIsPaused bool
-    isRunning bool // savoir si la partie tourne
-    FrameCount int
+	isRunning     bool // savoir si la partie tourne
+	FrameCount    int
 
-/* afficher l'explication
-##########################################################
-#          TOUT EN RAPPORT AVEC LES TEXTURES             #           
-# Source des sprites, leurs destinations.... (affichage) #
-##########################################################
-*/
-    textureCharacter rl.Texture2D
-    textureMap rl.Texture2D
-    wallSpriteSrc rl.Rectangle
-    littleSpriteSrc rl.Rectangle
-    tex rl.Texture2D
-    plateformSpriteSrc rl.Rectangle
-    plateformSpriteDest rl.Rectangle
-    objSrc rl.Rectangle
-    objDest rl.Rectangle
-    gargantuaDest rl.Rectangle
-    gargantuaTex rl.Texture2D
-    gargantuaSrc rl.Rectangle
-    gargantuaSpeed int
-    framecountGargantua int
+	/* afficher l'explication
+	   ##########################################################
+	   #          TOUT EN RAPPORT AVEC LES TEXTURES             #
+	   # Source des sprites, leurs destinations.... (affichage) #
+	   ##########################################################
+	*/
+	textureCharacter    rl.Texture2D
+	textureMap          rl.Texture2D
+	wallSpriteSrc       rl.Rectangle
+	littleSpriteSrc     rl.Rectangle
+	tex                 rl.Texture2D
+	plateformSpriteSrc  rl.Rectangle
+	plateformSpriteDest rl.Rectangle
+	objSrc              rl.Rectangle
+	objDest             rl.Rectangle
+	gargantuaDest       rl.Rectangle
+	gargantuaTex        rl.Texture2D
+	gargantuaSrc        rl.Rectangle
+	gargantuaSpeed      int
+	framecountGargantua int
 
-/* afficher l'explication
-##########################################################
-#          TOUT EN RAPPORT AVEC LE JOUEUR                #           
-#Source  joueur, gravité, mouvement, affichage joueur... #
-##########################################################
-*/
-    playerSrc rl.Rectangle
-    playerDest rl.Rectangle
-    playerVector rl.Vector2
+	/* afficher l'explication
+	   ##########################################################
+	   #          TOUT EN RAPPORT AVEC LE JOUEUR                #
+	   #Source  joueur, gravité, mouvement, affichage joueur... #
+	   ##########################################################
+	*/
+	playerSrc    rl.Rectangle
+	playerDest   rl.Rectangle
+	playerVector rl.Vector2
 
-    playerSpeed float32
-    playerMoving bool
-    playerDir int
-    playerUp,playerDown,playerRight,playerLeft bool
+	playerMoving                                  bool
+	playerDir                                     int
+	playerUp, playerDown, playerRight, playerLeft bool
 
-    playerIsJumping bool
-    playerFrame int
+	playerSpeed     float32
+	playerIsJumping bool
+	gravity         float32
+	jumpForce       float32
 
-    gravity int
-    playerCanJump bool
-    cam2d rl.Camera2D
+	playerFrame int
 
-    hitboxHeight float32
-    hitboxWidth float32
-    hitboxX float32
-    hitboxY float32
-    adjustedHitbox rl.Rectangle
-    adjustedPlayerDest rl.Rectangle
+	playerCanJump bool
+	cam2d         rl.Camera2D
 
+	hitboxHeight       float32
+	hitboxWidth        float32
+	hitboxX            float32
+	hitboxY            float32
+	adjustedHitbox     rl.Rectangle
+	adjustedPlayerDest rl.Rectangle
 
-/* afficher l'explication
-##########################################################
-#          TOUT EN RAPPORT AVEC LA MAP                   #           
-#                Taille  ect.....                        #
-##########################################################
-*/
-    mapFile  string
-    timePlayed float32
-    tileDest rl.Rectangle
-    tileSrc rl.Rectangle
-    tileMap []int
-    tileMapLink string
-    srcMap []string
-    mapW, mapH int
+	/* afficher l'explication
+	   ##########################################################
+	   #          TOUT EN RAPPORT AVEC LA MAP                   #
+	   #                Taille  ect.....                        #
+	   ##########################################################
+	*/
+	mapFile       string
+	timePlayed    float32
+	tileDest      rl.Rectangle
+	tileSrc       rl.Rectangle
+	tileMap       []int
+	tileMapLink   string
+	srcMap        []string
+	mapW, mapH    int
+	mapFileHeight int
+	mapFileWidth  int
 }
-
 
 func main() {
 
-    var game gameEngine // défini game a la struct window
-    game.Init(1366, 768," Donkey Kong Mario", true, false, 0) // initialise la fenetre : donc attribue les valeurs automatiquement ?
-    // qu'est game.mario ?????????
-    rl.InitAudioDevice()
-    game.initGame()
+	var game gameEngine                                        // défini game a la struct window
+	game.Init(1366, 768, " Donkey Kong Mario", true, false, 0) // initialise la fenetre : donc attribue les valeurs automatiquement ?
+	// qu'est game.mario ?????????
+	rl.InitAudioDevice()
+	game.initGame()
 
 }

@@ -47,10 +47,14 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
 	p.playerDest = rl.NewRectangle(0, 0, 32, 32)                                // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
-	p.playerSpeed = 1.45
 	// p.tileSrc = rl.NewRectangle(1550, 110, 113, 185)
 	// p.tileDest = rl.NewRectangle(0, 0, 153, 83)
-	p.gravity = 30
+	// initialistion du saut du joueur :
+	p.playerIsJumping = false
+	p.playerSpeed = 1.45
+	p.gravity = 1.0
+	p.jumpForce = -20.0
+
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 4.0)
 
@@ -85,10 +89,10 @@ func (p *gameEngine) loadMap() {
 	}
 	const mapPath = "..assets/cat-mario.tmx"
 
-	fmt.Println("Map width:", p.mapFile.Width)
-	fmt.Println("Map height:", p.mapFile.Height)
+	fmt.Println("Map width:", p.mapFileWidth)
+	fmt.Println("Map height:", p.mapFileHeight)
 	fmt.Println("Map Link", p.tileMapLink)
-	fmt.Println("Map File",p. mapFile)
+	fmt.Println("Map File", p.mapFile)
 
 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
 	sliced := strings.Split(remNewLines, " ")
@@ -122,13 +126,16 @@ func (p *gameEngine) loadMap() {
 
 func (w *gameEngine) input() { // récupère les inputs de la map
 
-	if rl.IsKeyDown(rl.KeyUp) { // key left
-		w.playerDest.Y -= w.playerSpeed
-		w.playerUp = true // dit qu'il va en haut
-		w.playerCanJump = true
-		w.playerDir = 17 // permet de set quel frame on veut dans la grille de sprite
-		// pareil pour tous
+	if rl.IsKeyDown(rl.KeyUp) && !w.playerIsJumping { // key left
+		w.playerCanJump = false
+		w.playerIsJumping = true
+		if w.playerIsJumping {
+			w.playerDest.Y -= w.jumpForce
+		}
 		w.adjustedHitbox.Y -= w.playerSpeed
+		w.playerUp = true // dit qu'il va en haut
+		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
+		// pareil pour tous
 
 	}
 	if rl.IsKeyDown(rl.KeyDown) { // key left
@@ -168,17 +175,16 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
-	fmt.Println(p.playerCanJump)
-	// p.framecountGargantua += 1
-	// if !p.playerCanJump {
 
-	// }
+	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump {
+		p.playerDest.Y += 1
+
+	}
+	// if !p.playerIsJumping && p.playerDest.Y <= p.plateformSpriteDest.Y{
+	// 	for p.hitboxY < p.plateformSpriteDest.Y{
+	// 		p.playerDest.Y -= 10
+	// 	}
 	if p.playerMoving {
-
-		if p.playerUp {
-			p.playerDest.Y -= p.playerSpeed
-		}
-
 		if p.playerDown {
 			p.playerDest.Y += p.playerSpeed
 		}
@@ -214,16 +220,18 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	//adjustedPlayerDest := rl.NewRectangle(p.playerDest.X-p.playerDest.Width/2, p.playerDest.Y-p.playerDest.Height/2, p.playerDest.Width, p.playerDest.Height)
 
 	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) {
-
-		p.playerDest.Y -= 3
-		fmt.Println("colisision")
+		p.playerDest.Y -= 0
+		if p.playerIsJumping {
+			p.playerDest.Y -= 0
+			fmt.Println("le personnage peut sauter")
+		} else {
+			fmt.Println("le personnage ne peux pas sauter")
+		}
 
 	}
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
 	p.playerUp, p.playerDown, p.playerRight, p.playerLeft = false, false, false, false
-	p.playerCanJump = false
-	p.playerIsJumping = false
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
@@ -267,11 +275,6 @@ func (g *gameEngine) drawScene() {
 	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
 	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 39
 
-	g.testRectangel = rl.NewRectangle(0, 0, 100, 100)
-	//g.adjustedHitbox = rl.NewRectangle(g.hitboxX, g.hitboxY, g.hitboxWidth, g.hitboxHeight)
-	//rl.DrawRectangle()
-	fmt.Println(g.playerDest)
-	fmt.Println(g.testRectangel)
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
 	rl.DrawRectangleLines(int32(g.playerDest.X), int32(g.playerDest.Y), int32(g.playerDest.X+g.playerDest.Width), int32(g.playerDest.Y+g.playerDest.Height), rl.Blue)
 
