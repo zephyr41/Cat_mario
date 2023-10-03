@@ -36,8 +36,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	//p.objDest = rl.NewRectangle(0, 0, 306, 166)
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
-	p.playerCanJump = false
-	p.playerIsJumping = false
+
 	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
 	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
 	p.gargantuaDest = rl.NewRectangle(0, 0, 700, 700)
@@ -50,6 +49,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	// p.tileSrc = rl.NewRectangle(1550, 110, 113, 185)
 	// p.tileDest = rl.NewRectangle(0, 0, 153, 83)
 	// initialistion du saut du joueur :
+	p.playerCanJump = false
 	p.playerIsJumping = false
 	p.playerSpeed = 1.45
 	p.gravity = 1.0
@@ -126,27 +126,23 @@ func (p *gameEngine) loadMap() {
 
 func (w *gameEngine) input() { // récupère les inputs de la map
 
-	if rl.IsKeyDown(rl.KeyUp) && !w.playerIsJumping { // key left
-		w.playerCanJump = false
-		w.playerIsJumping = true
-		if w.playerIsJumping {
-			w.playerDest.Y -= w.jumpForce
-		}
-		w.adjustedHitbox.Y -= w.playerSpeed
+	if rl.IsKeyDown(rl.KeyUp) { // key left
+		//w.adjustedHitbox.Y -= w.playerSpeed
 		w.playerUp = true // dit qu'il va en haut
 		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
+
 		// pareil pour tous
 
 	}
-	if rl.IsKeyDown(rl.KeyDown) { // key left
-		w.playerDest.Y += w.playerSpeed
+	// if rl.IsKeyDown(rl.KeyDown) { // key left
+	// 	w.playerDest.Y += w.playerSpeed
 
-		w.playerMoving = true
-		w.playerDown = true
-		w.playerDir = 18
-		w.adjustedHitbox.Y += w.playerSpeed
+	// 	w.playerMoving = true
+	// 	w.playerDown = true
+	// 	w.playerDir = 18
+	// 	w.adjustedHitbox.Y += w.playerSpeed
 
-	}
+	// }
 	if rl.IsKeyDown(rl.KeyLeft) { // key left
 		w.playerDest.X -= w.playerSpeed
 		w.playerMoving = true
@@ -176,18 +172,34 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
 
-	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump {
+	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
 		p.playerDest.Y += 1
+		p.playerMoving = true
+	}
+	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) {
+		p.playerCanJump = true
+		p.playerIsJumping = false
+		if p.playerCanJump && !p.playerIsJumping {
+			if p.playerUp {
+				fmt.Println("le joueur appuie sur haut")
+				if p.FrameCount%8 == 1 {
+					p.playerFrame++
+					p.playerDest.Y -= 30
+				}
+			}
 
+		}
+		p.playerCanJump = false
+		p.playerIsJumping = true
 	}
 	// if !p.playerIsJumping && p.playerDest.Y <= p.plateformSpriteDest.Y{
 	// 	for p.hitboxY < p.plateformSpriteDest.Y{
 	// 		p.playerDest.Y -= 10
 	// 	}
 	if p.playerMoving {
-		if p.playerDown {
-			p.playerDest.Y += p.playerSpeed
-		}
+		// if p.playerDown {
+		// 	p.playerDest.Y += p.playerSpeed
+		// }
 		if p.playerLeft {
 			p.playerDest.X -= p.playerSpeed
 		}
@@ -219,16 +231,14 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	}
 	//adjustedPlayerDest := rl.NewRectangle(p.playerDest.X-p.playerDest.Width/2, p.playerDest.Y-p.playerDest.Height/2, p.playerDest.Width, p.playerDest.Height)
 
-	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) {
-		p.playerDest.Y -= 0
-		if p.playerIsJumping {
-			p.playerDest.Y -= 0
-			fmt.Println("le personnage peut sauter")
-		} else {
-			fmt.Println("le personnage ne peux pas sauter")
-		}
+	// if p.playerIsJumping {
+	// 	p.playerDest.Y -= 0
 
-	}
+	// 	fmt.Println("le personnage peut sauter", p.playerCanJump)
+	// } else {
+	// 	fmt.Println("le personnage ne peux pas sauter", p.playerCanJump)
+	// }
+
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
 	p.playerUp, p.playerDown, p.playerRight, p.playerLeft = false, false, false, false
