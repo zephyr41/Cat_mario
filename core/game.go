@@ -27,9 +27,9 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.isRunning = true
 	p.tex = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
-	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1224, 394)
+	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1000, 394)
 
-	p.plateformSpriteDest = rl.NewRectangle(0, 0, 153, 49)
+	p.plateformSpriteDest = rl.NewRectangle(0, 30, 153, 49)
 
 
 	//p.objDest = rl.NewRectangle(0, 0, 306, 166)
@@ -57,8 +57,8 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	// p.musicIsPaused = false
 	//rl.PlayMusicStream(p.musicMenu)
 	//p.loadMap()
-	p.hitboxWidth = p.playerDest.Width / 2
-	p.hitboxHeight = p.playerDest.Height / 2
+	p.hitboxWidth = p.playerDest.Width / 4
+	p.hitboxHeight = p.playerDest.Height / 4
 	p.hitboxX = p.playerDest.X + p.playerDest.Width/4  // Décalage horizontal pour centrer
 	p.hitboxY = p.playerDest.Y + p.playerDest.Height/4 // Décalage vertical pour centrer
 
@@ -207,7 +207,8 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	//adjustedPlayerDest := rl.NewRectangle(p.playerDest.X-p.playerDest.Width/2, p.playerDest.Y-p.playerDest.Height/2, p.playerDest.Width, p.playerDest.Height)
 
 	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) {
-		// p.playerDest.Y -= p.plateformSpriteSrc.Y - 4
+		
+		 p.playerDest.Y -=3
 		fmt.Println("colisision")
 
 	}
@@ -255,14 +256,12 @@ func (g *gameEngine) drawScene() {
 	// 	}
 
 	// }
-	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/2, g.playerDest.Y-g.playerDest.Height/2, g.playerDest.Width, g.playerDest.Height)
-	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width-45
+	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
+	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width-46
 	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height-39
 
 	g.testRectangel = rl.NewRectangle(0, 0, 100, 100)
 	//g.adjustedHitbox = rl.NewRectangle(g.hitboxX, g.hitboxY, g.hitboxWidth, g.hitboxHeight)
-
-	rl.DrawRectangleV(rl.NewVector2(0, 0), rl.NewVector2(100, 100), rl.White)
 	//rl.DrawRectangle()
 	fmt.Println(g.playerDest)
 	fmt.Println(g.testRectangel)
