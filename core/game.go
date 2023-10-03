@@ -2,6 +2,11 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+
+	"github.com/lafriks/go-tiled"
+	"github.com/lafriks/go-tiled/render"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -75,43 +80,50 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 }
 
-// func (p *gameEngine) loadMap() {
-// 	p.tileMapLink = "../assets/one.map"
-// 	file, err := os.ReadFile(p.tileMapLink)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		os.Exit(1)
-// 	}
-// 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
-// 	sliced := strings.Split(remNewLines, " ")
+func (p *gameEngine) loadMap() {
+	file, err := os.ReadFile(p.tileMapLink)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	const mapPath = "..assets/cat-mario.tmx"
+	}
 
-// 	p.mapW = -1
-// 	p.mapH = -1
+	fmt.Println("Map width:", mapFile.Width)
+	fmt.Println("Map height:", mapFile.Height)
+	fmt.Println("Map Link", tileMapLink)
+	fmt.Println("Map File", mapFile)
 
-// 	for i := 0; i < len(sliced); i++ {
+	remNewLines := strings.Replace(string(file), "\n", " ", -1)
+	sliced := strings.Split(remNewLines, " ")
 
-// 		s, _ := strconv.ParseInt(sliced[i], 10, 64)
-// 		//fmt.Println("slice", i, sliced[i], "s", s)
-// 		m := int(s)
-// 		if p.mapW == -1 {
-// 			p.mapW = m
+	p.mapW = -1
+	p.mapH = -1
 
-// 		} else if p.mapH == -1 {
-// 			p.mapH = m
-// 		} else if i < p.mapW*p.mapH+2 {
-// 			p.tileMap = append(p.tileMap, m)
-// 		} else {
-// 			p.srcMap = append(p.srcMap, sliced[i])
-// 		}
+	for i := 0; i < len(sliced); i++ {
 
-// 	}
-// 	if len(p.tileMap) > p.mapW*p.mapH {
-// 		p.tileMap = p.tileMap[:len(p.tileMap)-1]
-// 	}
-// 	// p.mapW = 5
-// 	// p.mapH = 5
+		s, _ := strconv.ParseInt(sliced[i], 10, 64)
+		fmt.Println("slice", i, sliced[i], "s", s)
+		m := int(s)
+		if p.mapW == -1 {
+			p.mapW = m
 
-// }
+		} else if p.mapH == -1 {
+			p.mapH = m
+		} else if i < p.mapW*p.mapH+2 {
+			p.tileMap = append(p.tileMap, m)
+		} else {
+			p.srcMap = append(p.srcMap, sliced[i])
+		}
+
+	}
+	if len(p.tileMap) > p.mapW*p.mapH {
+		p.tileMap = p.tileMap[:len(p.tileMap)-1]
+	}
+	p.mapW = 5
+	p.mapH = 5
+
+}
 
 func (w *gameEngine) input() { // récupère les inputs de la map
 
@@ -225,7 +237,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
 	rl.BeginMode2D(g.cam2d)
-	rl.DrawText("CAT SPACER", 0, 0, 35, rl.White)
+	rl.DrawText("CAT MARIO", 0, 0, 35, rl.White)
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}
@@ -266,7 +278,11 @@ func (g *gameEngine) drawScene() {
 	fmt.Println(g.playerDest)
 	fmt.Println(g.testRectangel)
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0),0, rl.White)
+	rl.DrawRectangleLines(int32(g.playerDest.X), int32(g.playerDest.Y), int32(g.playerDest.X+g.playerDest.Width), int32(g.playerDest.Y+g.playerDest.Height), rl.Blue)
+
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0),0, rl.Red)
+	//rl.DrawTexturePro(g.gargantuaTex, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
+	//rl.DrawRectangleV(rl.NewVector2(g.plateformSpriteDest.X,g.plateformSpriteDest.Y ), rl.NewVector2(g.plateformSpriteDest.Width,g.plateformSpriteDest.Height ),rl.Beige)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.Red) // drawTextureMario
 	//rl.DrawRectangleV(rl.NewVector2(0,0), rl.NewVector2(40,40), rl.Blue)
