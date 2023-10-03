@@ -32,8 +32,10 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.isRunning = true
 	p.tex = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
-	p.plateformSpriteSrc = rl.NewRectangle(230, 1395, 100, 100)
-	p.plateformSpriteDest = rl.NewRectangle(0, 0, 100, 100)
+	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1224, 394)
+
+	p.plateformSpriteDest = rl.NewRectangle(0, 0, 153, 49)
+
 
 	//p.objDest = rl.NewRectangle(0, 0, 306, 166)
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
@@ -279,7 +281,7 @@ func (g *gameEngine) drawScene() {
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
 	rl.DrawRectangleLines(int32(g.playerDest.X), int32(g.playerDest.Y), int32(g.playerDest.X+g.playerDest.Width), int32(g.playerDest.Y+g.playerDest.Height), rl.Blue)
 
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0),0, rl.Red)
 	//rl.DrawTexturePro(g.gargantuaTex, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
 	//rl.DrawRectangleV(rl.NewVector2(g.plateformSpriteDest.X,g.plateformSpriteDest.Y ), rl.NewVector2(g.plateformSpriteDest.Width,g.plateformSpriteDest.Height ),rl.Beige)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)

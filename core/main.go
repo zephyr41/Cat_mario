@@ -10,17 +10,18 @@ type ObjectWhoMoove struct {
 }
 
 type gameEngine struct {
-    width int32
-    heigh int32
-    title string
-    //maxBarril int
-    score int
-    testRectangel rl.Rectangle
-    dead bool
-    //mario ObjectWhoMoove
-    //barril ObjectWhoMoove
-    musicMenu rl.Music
-    musicIsPaused bool
+	width int32
+	heigh int32
+	title string
+	//maxBarril int
+	score int
+	test1 [4]float32
+	testRectangel rl.Rectangle
+	dead bool
+	//mario ObjectWhoMoove
+	//barril ObjectWhoMoove
+	musicMenu rl.Music
+	musicIsPaused bool
 
     textureCharacter rl.Texture2D
     textureMap rl.Texture2D
