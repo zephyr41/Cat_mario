@@ -62,7 +62,7 @@ type gameEngine struct {
 	//mapFile  string
 	//playerCanJump bool
 	//timePlayed float32
-
+	adjustedPlayerDest rl.Rectangle
 
 	// tileDest rl.Rectangle
 	// tileSrc rl.Rectangle

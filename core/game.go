@@ -136,7 +136,7 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		w.playerMoving = true
 		w.playerDir = 5
 		w.playerLeft = true
-		w.adjustedHitbox.X += w.playerSpeed
+		w.adjustedHitbox.X -= w.playerSpeed
 
 	}
 	if rl.IsKeyDown(rl.KeyRight) { // key left
@@ -253,6 +253,9 @@ func (g *gameEngine) drawScene() {
 	// 	}
 
 	// }
+	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/2, g.playerDest.Y-g.playerDest.Height/2, g.playerDest.Width, g.playerDest.Height)
+	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width-45
+	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height-39
 
 	g.testRectangel = rl.NewRectangle(0, 0, 100, 100)
 	//g.adjustedHitbox = rl.NewRectangle(g.hitboxX, g.hitboxY, g.hitboxWidth, g.hitboxHeight)
@@ -261,7 +264,7 @@ func (g *gameEngine) drawScene() {
 	//rl.DrawRectangle()
 	fmt.Println(g.playerDest)
 	fmt.Println(g.testRectangel)
-	rl.DrawRectangleLines(int32(g.hitboxX), int32(g.hitboxY), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
+	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
 	rl.DrawRectangleLines(int32(g.playerDest.X), int32(g.playerDest.Y), int32(g.playerDest.X+g.playerDest.Width), int32(g.playerDest.Y+g.playerDest.Height), rl.Blue)
 
 	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0),0, rl.Red)
