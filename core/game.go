@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
+
+	"github.com/lafriks/go-tiled"
+	"github.com/lafriks/go-tiled/render"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -77,12 +79,19 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 }
 
 func (p *gameEngine) loadMap() {
-	p.tileMapLink = "../assets/one.map"
 	file, err := os.ReadFile(p.tileMapLink)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	const mapPath = "..assets/cat-mario.tmx"
+	}
+
+	fmt.Println("Map width:", mapFile.Width)
+	fmt.Println("Map height:", mapFile.Height)
+	fmt.Println("Map Link", tileMapLink)
+	fmt.Println("Map File", mapFile)
+
 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
 	sliced := strings.Split(remNewLines, " ")
 
@@ -257,8 +266,8 @@ func (g *gameEngine) drawScene() {
 
 	// }
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/2, g.playerDest.Y-g.playerDest.Height/2, g.playerDest.Width, g.playerDest.Height)
-	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width-45
-	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height-39
+	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 45
+	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 39
 
 	g.testRectangel = rl.NewRectangle(0, 0, 100, 100)
 	//g.adjustedHitbox = rl.NewRectangle(g.hitboxX, g.hitboxY, g.hitboxWidth, g.hitboxHeight)
@@ -270,7 +279,7 @@ func (g *gameEngine) drawScene() {
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
 	rl.DrawRectangleLines(int32(g.playerDest.X), int32(g.playerDest.Y), int32(g.playerDest.X+g.playerDest.Width), int32(g.playerDest.Y+g.playerDest.Height), rl.Blue)
 
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0),0, rl.Red)
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
 	//rl.DrawTexturePro(g.gargantuaTex, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
 	//rl.DrawRectangleV(rl.NewVector2(g.plateformSpriteDest.X,g.plateformSpriteDest.Y ), rl.NewVector2(g.plateformSpriteDest.Width,g.plateformSpriteDest.Height ),rl.Beige)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)
