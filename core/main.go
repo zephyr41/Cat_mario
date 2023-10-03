@@ -79,22 +79,14 @@ type gameEngine struct {
 	adjustedHitbox     rl.Rectangle
 	adjustedPlayerDest rl.Rectangle
 
-	/* afficher l'explication
-	   ##########################################################
-	   #          TOUT EN RAPPORT AVEC LA MAP                   #
-	   #                Taille  ect.....                        #
-	   ##########################################################
-	*/
-	mapFile       string
-	timePlayed    float32
-	tileDest      rl.Rectangle
-	tileSrc       rl.Rectangle
-	tileMap       []int
-	tileMapLink   string
-	srcMap        []string
-	mapW, mapH    int
-	mapFileHeight int
-	mapFileWidth  int
+    tileDest rl.Rectangle
+    tileSrc rl.Rectangle
+    tileMap []int
+    tileMapLink string
+    srcMap []string
+    gravity int
+    playerCanJump bool
+    mapW, mapH int
 }
 
 func main() {
