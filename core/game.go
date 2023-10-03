@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
-
-	"github.com/lafriks/go-tiled"
-	"github.com/lafriks/go-tiled/render"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -35,7 +33,6 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1000, 394)
 
 	p.plateformSpriteDest = rl.NewRectangle(0, 30, 153, 49)
-
 
 	//p.objDest = rl.NewRectangle(0, 0, 306, 166)
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
@@ -87,10 +84,9 @@ func (p *gameEngine) loadMap() {
 		os.Exit(1)
 	}
 	const mapPath = "..assets/cat-mario.tmx"
-	}
 
-	fmt.Println("Map width:", mapFile.Width)
-	fmt.Println("Map height:", mapFile.Height)
+	fmt.Println("Map width:", p.mapFile.Width)
+	fmt.Println("Map height:", p.mapFile.Height)
 	fmt.Println("Map Link", tileMapLink)
 	fmt.Println("Map File", mapFile)
 
@@ -115,14 +111,13 @@ func (p *gameEngine) loadMap() {
 		} else {
 			p.srcMap = append(p.srcMap, sliced[i])
 		}
+		if len(p.tileMap) > p.mapW*p.mapH {
+			p.tileMap = p.tileMap[:len(p.tileMap)-1]
+		}
+		p.mapW = 5
+		p.mapH = 5
 
 	}
-	if len(p.tileMap) > p.mapW*p.mapH {
-		p.tileMap = p.tileMap[:len(p.tileMap)-1]
-	}
-	p.mapW = 5
-	p.mapH = 5
-
 }
 
 func (w *gameEngine) input() { // récupère les inputs de la map
@@ -219,8 +214,8 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	//adjustedPlayerDest := rl.NewRectangle(p.playerDest.X-p.playerDest.Width/2, p.playerDest.Y-p.playerDest.Height/2, p.playerDest.Width, p.playerDest.Height)
 
 	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) {
-		
-		 p.playerDest.Y -=3
+
+		p.playerDest.Y -= 3
 		fmt.Println("colisision")
 
 	}
@@ -269,8 +264,8 @@ func (g *gameEngine) drawScene() {
 
 	// }
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
-	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width-46
-	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height-39
+	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
+	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 39
 
 	g.testRectangel = rl.NewRectangle(0, 0, 100, 100)
 	//g.adjustedHitbox = rl.NewRectangle(g.hitboxX, g.hitboxY, g.hitboxWidth, g.hitboxHeight)
@@ -280,7 +275,7 @@ func (g *gameEngine) drawScene() {
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
 	rl.DrawRectangleLines(int32(g.playerDest.X), int32(g.playerDest.Y), int32(g.playerDest.X+g.playerDest.Width), int32(g.playerDest.Y+g.playerDest.Height), rl.Blue)
 
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0),0, rl.Red)
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
 	//rl.DrawTexturePro(g.gargantuaTex, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
 	//rl.DrawRectangleV(rl.NewVector2(g.plateformSpriteDest.X,g.plateformSpriteDest.Y ), rl.NewVector2(g.plateformSpriteDest.Width,g.plateformSpriteDest.Height ),rl.Beige)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)
