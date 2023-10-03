@@ -10,67 +10,87 @@ type ObjectWhoMoove struct {
 }
 
 type gameEngine struct {
+/* afficher l'explication
+##########################################################
+#          TOUT EN RAPPORT AVEC LA MAP                   #           
+#     Largeur, music, la partie est elle en cours...     #
+##########################################################
+*/
 	width int32
 	heigh int32
 	title string
-	//maxBarril int
 	score int
 	test1 [4]float32
-	testRectangel rl.Rectangle
 	dead bool
-	//mario ObjectWhoMoove
-	//barril ObjectWhoMoove
 	musicMenu rl.Music
 	musicIsPaused bool
+    isRunning bool // savoir si la partie tourne
+    FrameCount int
 
+/* afficher l'explication
+##########################################################
+#          TOUT EN RAPPORT AVEC LES TEXTURES             #           
+# Source des sprites, leurs destinations.... (affichage) #
+##########################################################
+*/
     textureCharacter rl.Texture2D
     textureMap rl.Texture2D
-
-    objSrc rl.Rectangle
-    objDest rl.Rectangle
-    // srcMap  []string
-    plateformSpriteSrc rl.Rectangle
-    plateformSpriteDest rl.Rectangle
-
     wallSpriteSrc rl.Rectangle
     littleSpriteSrc rl.Rectangle
     tex rl.Texture2D
-
-    playerSrc rl.Rectangle
-    playerDest rl.Rectangle
-    playerVector rl.Vector2
-    playerSpeed float32
-    playerMoving bool
-    playerDir int
-    playerUp,playerDown,playerRight,playerLeft bool
-    playerIsJumping bool
-
-    cam2d rl.Camera2D
-    isRunning bool
-    playerFrame int
-    FrameCount int
+    plateformSpriteSrc rl.Rectangle
+    plateformSpriteDest rl.Rectangle
+    objSrc rl.Rectangle
+    objDest rl.Rectangle
     gargantuaDest rl.Rectangle
     gargantuaTex rl.Texture2D
     gargantuaSrc rl.Rectangle
     gargantuaSpeed int
     framecountGargantua int
+
+/* afficher l'explication
+##########################################################
+#          TOUT EN RAPPORT AVEC LE JOUEUR                #           
+#Source  joueur, gravité, mouvement, affichage joueur... #
+##########################################################
+*/
+    playerSrc rl.Rectangle
+    playerDest rl.Rectangle
+    playerVector rl.Vector2
+
+    playerSpeed float32
+    playerMoving bool
+    playerDir int
+    playerUp,playerDown,playerRight,playerLeft bool
+
+    playerIsJumping bool
+    playerFrame int
+
+    gravity int
+    playerCanJump bool
+    cam2d rl.Camera2D
+
     hitboxHeight float32
     hitboxWidth float32
     hitboxX float32
     hitboxY float32
     adjustedHitbox rl.Rectangle
-    mapFile  string
-    // playerCanJump bool
-    timePlayed float32
     adjustedPlayerDest rl.Rectangle
 
+
+/* afficher l'explication
+##########################################################
+#          TOUT EN RAPPORT AVEC LA MAP                   #           
+#                Taille  ect.....                        #
+##########################################################
+*/
+    mapFile  string
+    timePlayed float32
     tileDest rl.Rectangle
     tileSrc rl.Rectangle
     tileMap []int
     tileMapLink string
     srcMap []string
-    gravity int
-    playerCanJump bool
     mapW, mapH int
 }
 

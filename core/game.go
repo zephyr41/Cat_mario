@@ -87,8 +87,8 @@ func (p *gameEngine) loadMap() {
 
 	fmt.Println("Map width:", p.mapFile.Width)
 	fmt.Println("Map height:", p.mapFile.Height)
-	fmt.Println("Map Link", tileMapLink)
-	fmt.Println("Map File", mapFile)
+	fmt.Println("Map Link", p.tileMapLink)
+	fmt.Println("Map File",p. mapFile)
 
 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
 	sliced := strings.Split(remNewLines, " ")
