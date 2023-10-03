@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -73,43 +76,43 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 }
 
-// func (p *gameEngine) loadMap() {
-// 	p.tileMapLink = "../assets/one.map"
-// 	file, err := os.ReadFile(p.tileMapLink)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		os.Exit(1)
-// 	}
-// 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
-// 	sliced := strings.Split(remNewLines, " ")
+func (p *gameEngine) loadMap() {
+	p.tileMapLink = "../assets/one.map"
+	file, err := os.ReadFile(p.tileMapLink)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	remNewLines := strings.Replace(string(file), "\n", " ", -1)
+	sliced := strings.Split(remNewLines, " ")
 
-// 	p.mapW = -1
-// 	p.mapH = -1
+	p.mapW = -1
+	p.mapH = -1
 
-// 	for i := 0; i < len(sliced); i++ {
+	for i := 0; i < len(sliced); i++ {
 
-// 		s, _ := strconv.ParseInt(sliced[i], 10, 64)
-// 		//fmt.Println("slice", i, sliced[i], "s", s)
-// 		m := int(s)
-// 		if p.mapW == -1 {
-// 			p.mapW = m
+		s, _ := strconv.ParseInt(sliced[i], 10, 64)
+		fmt.Println("slice", i, sliced[i], "s", s)
+		m := int(s)
+		if p.mapW == -1 {
+			p.mapW = m
 
-// 		} else if p.mapH == -1 {
-// 			p.mapH = m
-// 		} else if i < p.mapW*p.mapH+2 {
-// 			p.tileMap = append(p.tileMap, m)
-// 		} else {
-// 			p.srcMap = append(p.srcMap, sliced[i])
-// 		}
+		} else if p.mapH == -1 {
+			p.mapH = m
+		} else if i < p.mapW*p.mapH+2 {
+			p.tileMap = append(p.tileMap, m)
+		} else {
+			p.srcMap = append(p.srcMap, sliced[i])
+		}
 
-// 	}
-// 	if len(p.tileMap) > p.mapW*p.mapH {
-// 		p.tileMap = p.tileMap[:len(p.tileMap)-1]
-// 	}
-// 	// p.mapW = 5
-// 	// p.mapH = 5
+	}
+	if len(p.tileMap) > p.mapW*p.mapH {
+		p.tileMap = p.tileMap[:len(p.tileMap)-1]
+	}
+	p.mapW = 5
+	p.mapH = 5
 
-// }
+}
 
 func (w *gameEngine) input() { // récupère les inputs de la map
 
@@ -222,7 +225,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
 	rl.BeginMode2D(g.cam2d)
-	rl.DrawText("CAT SPACER", 0, 0, 35, rl.White)
+	rl.DrawText("CAT MARIO", 0, 0, 35, rl.White)
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}

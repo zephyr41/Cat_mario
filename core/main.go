@@ -13,27 +13,27 @@ type gameEngine struct {
 	width int32
 	heigh int32
 	title string
-	//maxBarril int
+	maxBarril int
 	score int
 	test1 [4]float32
 	testRectangel rl.Rectangle
 	dead bool
-	//mario ObjectWhoMoove
-	//barril ObjectWhoMoove
+	mario ObjectWhoMoove
+	barril ObjectWhoMoove
 	musicMenu rl.Music
 	musicIsPaused bool
 
 	textureCharacter rl.Texture2D
 	textureMap rl.Texture2D
 
-	// objSrc rl.Rectangle
-	// objDest rl.Rectangle
+	objSrc rl.Rectangle
+	objDest rl.Rectangle
 	// srcMap  []string
 	plateformSpriteSrc rl.Rectangle
 	plateformSpriteDest rl.Rectangle
 
-	// wallSpriteSrc rl.Rectangle
-	// littleSpriteSrc rl.Rectangle
+	wallSpriteSrc rl.Rectangle
+	littleSpriteSrc rl.Rectangle
 	tex rl.Texture2D
 
 	playerSrc rl.Rectangle
@@ -59,19 +59,19 @@ type gameEngine struct {
 	hitboxX float32
 	hitboxY float32
 	adjustedHitbox rl.Rectangle
-	//mapFile  string
-	//playerCanJump bool
-	//timePlayed float32
-
-
-	// tileDest rl.Rectangle
-	// tileSrc rl.Rectangle
-	// tileMap []int
-	// tileMapLink string
-	//srcMap []string
-	gravity int
+	mapFile  string
 	playerCanJump bool
-	//mapW, mapH int
+	timePlayed float32
+
+
+	tileDest rl.Rectangle
+	tileSrc rl.Rectangle
+	tileMap []int
+	tileMapLink string
+	srcMap []string
+	gravity int
+	// playerCanJump bool
+	mapW, mapH int
 }
 
 

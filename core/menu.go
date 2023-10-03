@@ -3,7 +3,7 @@ package main
 import rl "github.com/gen2brain/raylib-go/raylib"
 
 func Menu (w gameEngine){
-	rl.InitWindow(1366, 768, "Donkey Kong Mario") // définit la taille de la fenetre
+	rl.InitWindow(1366, 768, "Cat Mario") // définit la taille de la fenetre
 	defer rl.CloseWindow() // définit les boutons pour être ouvert fermé ?
 	rl.SetTargetFPS(60) // définit les fps a x
 
