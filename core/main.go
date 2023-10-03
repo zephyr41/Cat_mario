@@ -15,7 +15,6 @@ type gameEngine struct {
 	title string
 	//maxBarril int
 	score int
-	test1 [4]float32
 	testRectangel rl.Rectangle
 	dead bool
 	//mario ObjectWhoMoove
