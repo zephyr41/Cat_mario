@@ -66,13 +66,18 @@ type gameEngine struct {
 
 	playerSpeed     float32
 	playerIsJumping bool
+<<<<<<< HEAD
 	gravity         float32
 	jumpHmax int
 
+=======
+	// gravity         float32
+	jumpForce       float32
+>>>>>>> 7b7d49b0e1bf2cb53f7893e7b28bdc6901937062
 
 	playerFrame int
 
-	playerCanJump bool
+	// playerCanJump bool
 	cam2d         rl.Camera2D
 
 	hitboxHeight       float32
