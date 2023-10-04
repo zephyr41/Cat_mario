@@ -49,8 +49,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerCanJump = false
 	p.playerIsJumping = false
 	p.playerSpeed = 1.45
-	p.gravity = 1.0
-	p.jumpForce = -20.0
+	p.gravity = 2.15
 
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 4.0)
@@ -127,7 +126,7 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		//w.adjustedHitbox.Y -= w.playerSpeed
 		w.playerUp = true // dit qu'il va en haut
 		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
-
+		w.playerJumpVelocity = 1.0
 		// pareil pour tous
 
 	}
@@ -172,23 +171,24 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
 		p.playerDest.Y += 1
 		p.playerMoving = true
+		fmt.Println("après le saut le joueur est à ", p.playerDest.Y)
 	}
-	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) {
-		p.playerCanJump = true
-		p.playerIsJumping = false
-		if p.playerCanJump && !p.playerIsJumping {
-			if p.playerUp {
-				fmt.Println("le joueur appuie sur haut")
-
-				
-				if p.FrameCount%8 == 1 {
-				p.playerFrame++				
-				}
-		}
-		p.playerCanJump = false
+	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && p.playerUp {
+		p.playerMoving = true
 		p.playerIsJumping = true
+		p.playerCanJump = false
+		p.playerDest.Y -= 1
+			// le joueur doit passer de 38 a 
 	}
-}
+	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && p.playerIsJumping {
+		p.playerMoving = true
+		p.playerDest.Y -= p.gravity
+		if p.playerDest.Y <= 10 {
+		p.playerCanJump = false
+		p.playerIsJumping = false
+
+		}
+	}
 	// if !p.playerIsJumping && p.playerDest.Y <= p.plateformSpriteDest.Y{
 	// 	for p.hitboxY < p.plateformSpriteDest.Y{
 	// 		p.playerDest.Y -= 10
@@ -274,24 +274,20 @@ func (g *gameEngine) drawScene() {
 	// 		}
 	// 		g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 	// 		g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
-
 	// 	}
-
 	// }
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
 	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
 	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 39
 
-	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.Red)
-	rl.DrawRectangleLines(int32(g.playerDest.X), int32(g.playerDest.Y), int32(g.playerDest.X+g.playerDest.Width), int32(g.playerDest.Y+g.playerDest.Height), rl.Blue)
+	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.White)
 
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 	//rl.DrawTexturePro(g.gargantuaTex, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
 	//rl.DrawRectangleV(rl.NewVector2(g.plateformSpriteDest.X,g.plateformSpriteDest.Y ), rl.NewVector2(g.plateformSpriteDest.Width,g.plateformSpriteDest.Height ),rl.Beige)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)
-	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.Red) // drawTextureMario
+	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
 	//rl.DrawRectangleV(rl.NewVector2(0,0), rl.NewVector2(40,40), rl.Blue)
-
 }
 
 func (p *gameEngine) quit() {

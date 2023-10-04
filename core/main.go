@@ -47,6 +47,8 @@ type gameEngine struct {
 	gargantuaSrc        rl.Rectangle
 	gargantuaSpeed      int
 	framecountGargantua int
+	playerJumpVelocity float32
+	testjump bool
 
 	/* afficher l'explication
 	   ##########################################################
@@ -65,7 +67,8 @@ type gameEngine struct {
 	playerSpeed     float32
 	playerIsJumping bool
 	gravity         float32
-	jumpForce       float32
+	jumpHmax int
+
 
 	playerFrame int
 
