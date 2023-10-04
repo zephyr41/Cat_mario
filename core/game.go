@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -50,7 +49,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerCanJump = false
 	p.playerIsJumping = false
 	p.playerSpeed = 1.45
-	p.gravity = 2.15
+	p.gravity = 4.15
 
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 4.0)
@@ -79,17 +78,17 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 }
 
 func (p *gameEngine) loadMap() {
-	file, err := os.ReadFile(p.tileMapLink)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	const mapPath = "..assets/cat-mario.tmx"
+	// 	file, err := os.ReadFile(p.tileMapLink)
+	// 	if err != nil {
+	// 		fmt.Println(err)
+	// 		os.Exit(1)
+	// 	}
+	// 	const mapPath = "..assets/cat-mario.tmx"
 
-	fmt.Println("Map width:", p.mapFileWidth)
-	fmt.Println("Map height:", p.mapFileHeight)
-	fmt.Println("Map Link", p.tileMapLink)
-	fmt.Println("Map File", file)
+	// 	fmt.Println("Map width:", p.mapFileWidth)
+	// 	fmt.Println("Map height:", p.mapFileHeight)
+	// 	fmt.Println("Map Link", p.tileMapLink)
+	// 	fmt.Println("Map File", file)
 
 	// 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
 	// 	sliced := strings.Split(remNewLines, " ")
@@ -128,7 +127,6 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		//w.adjustedHitbox.Y -= w.playerSpeed
 		w.playerUp = true // dit qu'il va en haut
 		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
-		w.playerJumpVelocity = 1.0
 		// pareil pour tous
 
 	}
@@ -149,12 +147,29 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		w.adjustedHitbox.X -= w.playerSpeed
 
 	}
+	if rl.IsKeyDown(rl.KeyLeft) && rl.IsKeyDown(rl.KeyUp) { // key left
+		w.playerDest.X += w.playerSpeed
+		w.playerMoving = true
+		w.playerDir = 18
+		w.playerLeft = true
+		w.adjustedHitbox.X -= w.playerSpeed
+		w.playerUp = true // dit qu'il va en haut
+
+	} else if rl.IsKeyDown(rl.KeyRight) && rl.IsKeyDown(rl.KeyUp) { // key left
+		w.playerDest.X -= w.playerSpeed
+		w.playerMoving = true
+		w.playerDir = 7
+		w.playerRight = true
+		w.adjustedHitbox.X += w.playerSpeed
+		w.playerUp = true // dit qu'il va en haut
+
+	}
 	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 		w.playerMoving = true
 		w.playerRight = true
 		w.playerDir = 6
-		w.adjustedHitbox.Y += w.playerSpeed
+		w.adjustedHitbox.X += w.playerSpeed
 
 	}
 
@@ -186,7 +201,7 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && p.playerIsJumping {
 		p.playerMoving = true
 		p.playerDest.Y -= p.gravity
-		if p.playerDest.Y <= 10 {
+		if p.playerDest.Y <= -20 {
 			p.playerCanJump = false
 			p.playerIsJumping = false
 
