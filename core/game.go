@@ -147,23 +147,7 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		w.adjustedHitbox.X -= w.playerSpeed
 
 	}
-	if rl.IsKeyDown(rl.KeyLeft) && rl.IsKeyDown(rl.KeyUp) { // key left
-		w.playerDest.X += w.playerSpeed
-		w.playerMoving = true
-		w.playerDir = 18
-		w.playerLeft = true
-		w.adjustedHitbox.X -= w.playerSpeed
-		w.playerUp = true // dit qu'il va en haut
-
-	} else if rl.IsKeyDown(rl.KeyRight) && rl.IsKeyDown(rl.KeyUp) { // key left
-		w.playerDest.X -= w.playerSpeed
-		w.playerMoving = true
-		w.playerDir = 7
-		w.playerRight = true
-		w.adjustedHitbox.X += w.playerSpeed
-		w.playerUp = true // dit qu'il va en haut
-
-	}
+	
 	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 		w.playerMoving = true
@@ -294,13 +278,16 @@ func (g *gameEngine) drawScene() {
 	// 		g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
 	// 	}
 	// }
+	
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
 	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
 	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 39
-
+	
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.White)
-
+	
 	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
+	
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc,g.plateformSpriteDest , rl.NewVector2(0, 0), 0, rl.White)
 	//rl.DrawTexturePro(g.gargantuaTex, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
 	//rl.DrawRectangleV(rl.NewVector2(g.plateformSpriteDest.X,g.plateformSpriteDest.Y ), rl.NewVector2(g.plateformSpriteDest.Width,g.plateformSpriteDest.Height ),rl.Beige)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)
