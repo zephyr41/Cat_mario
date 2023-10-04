@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -85,40 +86,41 @@ func (p *gameEngine) loadMap() {
 	}
 	const mapPath = "..assets/cat-mario.tmx"
 
-	fmt.Println("Map width:", p.mapFile.Width)
-	fmt.Println("Map height:", p.mapFile.Height)
-	fmt.Println("Map Link", tileMapLink)
-	fmt.Println("Map File", mapFile)
+	fmt.Println("Map width:", p.mapFileWidth)
+	fmt.Println("Map height:", p.mapFileHeight)
+	fmt.Println("Map Link", p.tileMapLink)
+	fmt.Println("Map File", file)
 
-// 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
-// 	sliced := strings.Split(remNewLines, " ")
+	// 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
+	// 	sliced := strings.Split(remNewLines, " ")
 
-// 	p.mapW = -1
-// 	p.mapH = -1
+	// 	p.mapW = -1
+	// 	p.mapH = -1
 
-// 	for i := 0; i < len(sliced); i++ {
+	// 	for i := 0; i < len(sliced); i++ {
 
-// 		s, _ := strconv.ParseInt(sliced[i], 10, 64)
-// 		fmt.Println("slice", i, sliced[i], "s", s)
-// 		m := int(s)
-// 		if p.mapW == -1 {
-// 			p.mapW = m
+	// 		s, _ := strconv.ParseInt(sliced[i], 10, 64)
+	// 		fmt.Println("slice", i, sliced[i], "s", s)
+	// 		m := int(s)
+	// 		if p.mapW == -1 {
+	// 			p.mapW = m
 
-// 		} else if p.mapH == -1 {
-// 			p.mapH = m
-// 		} else if i < p.mapW*p.mapH+2 {
-// 			p.tileMap = append(p.tileMap, m)
-// 		} else {
-// 			p.srcMap = append(p.srcMap, sliced[i])
-// 		}
-// 		if len(p.tileMap) > p.mapW*p.mapH {
-// 			p.tileMap = p.tileMap[:len(p.tileMap)-1]
-// 		}
-// 		p.mapW = 5
-// 		p.mapH = 5
+	// 		} else if p.mapH == -1 {
+	// 			p.mapH = m
+	// 		} else if i < p.mapW*p.mapH+2 {
+	// 			p.tileMap = append(p.tileMap, m)
+	// 		} else {
+	// 			p.srcMap = append(p.srcMap, sliced[i])
+	// 		}
+	// 		if len(p.tileMap) > p.mapW*p.mapH {
+	// 			p.tileMap = p.tileMap[:len(p.tileMap)-1]
+	// 		}
+	// 		p.mapW = 5
+	// 		p.mapH = 5
 
-// 	}
-// }
+	//		}
+	//	}
+}
 
 func (w *gameEngine) input() { // récupère les inputs de la map
 
@@ -161,6 +163,7 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 
 		w.playerUp = true
 	}
+
 }
 
 func (p *gameEngine) update() { // va définir les mouvements du personnage
@@ -178,14 +181,14 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 		p.playerIsJumping = true
 		p.playerCanJump = false
 		p.playerDest.Y -= 1
-			// le joueur doit passer de 38 a 
+		// le joueur doit passer de 38 a
 	}
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && p.playerIsJumping {
 		p.playerMoving = true
 		p.playerDest.Y -= p.gravity
 		if p.playerDest.Y <= 10 {
-		p.playerCanJump = false
-		p.playerIsJumping = false
+			p.playerCanJump = false
+			p.playerIsJumping = false
 
 		}
 	}
