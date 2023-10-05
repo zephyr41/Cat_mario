@@ -87,7 +87,7 @@ type gameEngine struct {
 	// srcMap                      []string
 	// mapFileWidth, mapFileHeight int
 	// img                         image.NRGBA
-	// mapObject                   tiled.Map
+	 mapObject                   tiled.Map
 	myGroup                     tiled.Group
 }
 

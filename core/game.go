@@ -88,10 +88,14 @@ func (g *gameEngine) loadMap() {
 	}
 	defer file.Close() // Assurez-vous de fermer le fichier à la fin
 
-	// Créer un décodeur XML à partir du fichier ouvert
+	// Créer un décodeur XML 
 	decoder := xml.NewDecoder(file)
 
-	g.myGroup.UnmarshalXML(decoder, xml.StartElement{})
+	g.myGroup.UnmarshalXML(decoder, xml.StartElement{}) // interprete fichier décoder ainsi que la première balise qu'il trouve dans le fihcier xml
+
+	g.myGroup.DecodeGroup(&g.mapObject) // on lui donne la map à décoder
+	fmt.Println("Contenu de la carte décoder :")
+    fmt.Printf("%+v\n", g.mapObject)
 }
 func (w *gameEngine) input() { // récupère les inputs de la map
 
