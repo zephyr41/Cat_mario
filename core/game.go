@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/xml"
 	"fmt"
+	"os"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -41,7 +43,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
-	p.playerDest = rl.NewRectangle(0, 0, 32, 32)                                // met une zone ou afficher ce bout d'image
+	p.playerDest = rl.NewRectangle(100, 0, 32, 32)                              // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 	// p.tileSrc = rl.NewRectangle(1550, 110, 113, 185)
 	// p.tileDest = rl.NewRectangle(0, 0, 153, 83)
@@ -58,13 +60,14 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	//p.musicMenu = rl.LoadMusicStream("../audio/peace.wav")
 	// p.musicIsPaused = false
 	//rl.PlayMusicStream(p.musicMenu)
-	//p.loadMap()
+
 	p.hitboxWidth = p.playerDest.Width / 4
 	p.hitboxHeight = p.playerDest.Height / 4
 	p.hitboxX = p.playerDest.X + p.playerDest.Width/4  // Décalage horizontal pour centrer
 	p.hitboxY = p.playerDest.Y + p.playerDest.Height/4 // Décalage vertical pour centrer
-
 	p.adjustedHitbox = rl.NewRectangle(p.hitboxX, p.hitboxY, p.hitboxWidth, p.hitboxHeight)
+	p.mapPath = "../assets/cat-mario.tmx"
+	p.loadMap()
 	for p.isRunning {
 		//rl.UpdateMusicStream(p.musicMenu)
 		p.input()
@@ -77,50 +80,19 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 }
 
-func (p *gameEngine) loadMap() {
-	// 	file, err := os.ReadFile(p.tileMapLink)
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 		os.Exit(1)
-	// 	}
-	// 	const mapPath = "..assets/cat-mario.tmx"
+func (g *gameEngine) loadMap() {
+	file, err := os.Open("../assets/cat-mario.tmx") // va chercher le fichier
+	if err != nil {
+		fmt.Println("Erreur lors de l'ouverture du fichier:", err)
+		return
+	}
+	defer file.Close() // Assurez-vous de fermer le fichier à la fin
 
-	// 	fmt.Println("Map width:", p.mapFileWidth)
-	// 	fmt.Println("Map height:", p.mapFileHeight)
-	// 	fmt.Println("Map Link", p.tileMapLink)
-	// 	fmt.Println("Map File", file)
+	// Créer un décodeur XML à partir du fichier ouvert
+	decoder := xml.NewDecoder(file)
 
-	// 	remNewLines := strings.Replace(string(file), "\n", " ", -1)
-	// 	sliced := strings.Split(remNewLines, " ")
-
-	// 	p.mapW = -1
-	// 	p.mapH = -1
-
-	// 	for i := 0; i < len(sliced); i++ {
-
-	// 		s, _ := strconv.ParseInt(sliced[i], 10, 64)
-	// 		fmt.Println("slice", i, sliced[i], "s", s)
-	// 		m := int(s)
-	// 		if p.mapW == -1 {
-	// 			p.mapW = m
-
-	// 		} else if p.mapH == -1 {
-	// 			p.mapH = m
-	// 		} else if i < p.mapW*p.mapH+2 {
-	// 			p.tileMap = append(p.tileMap, m)
-	// 		} else {
-	// 			p.srcMap = append(p.srcMap, sliced[i])
-	// 		}
-	// 		if len(p.tileMap) > p.mapW*p.mapH {
-	// 			p.tileMap = p.tileMap[:len(p.tileMap)-1]
-	// 		}
-	// 		p.mapW = 5
-	// 		p.mapH = 5
-
-	//		}
-	//	}
+	g.myGroup.UnmarshalXML(decoder, xml.StartElement{})
 }
-
 func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
@@ -147,7 +119,7 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		w.adjustedHitbox.X -= w.playerSpeed
 
 	}
-	
+
 	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 		w.playerMoving = true
@@ -171,9 +143,8 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.playerSrc.X = 7
 
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
-		p.playerDest.Y += 1
+		p.playerDest.Y += 4
 		p.playerMoving = true
-		fmt.Println("après le saut le joueur est à ", p.playerDest.Y)
 	}
 	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && p.playerUp {
 		p.playerMoving = true
@@ -184,21 +155,15 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	}
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && p.playerIsJumping {
 		p.playerMoving = true
-		p.playerDest.Y -= p.gravity
+		p.playerDest.Y -= p.gravity * 2
 		if p.playerDest.Y <= -20 {
 			p.playerCanJump = false
 			p.playerIsJumping = false
 
 		}
 	}
-	// if !p.playerIsJumping && p.playerDest.Y <= p.plateformSpriteDest.Y{
-	// 	for p.hitboxY < p.plateformSpriteDest.Y{
-	// 		p.playerDest.Y -= 10
-	// 	}
+
 	if p.playerMoving {
-		// if p.playerDown {
-		// 	p.playerDest.Y += p.playerSpeed
-		// }
 		if p.playerLeft {
 			p.playerDest.X -= p.playerSpeed
 		}
@@ -228,15 +193,6 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	} else {
 		rl.ResumeMusicStream(p.musicMenu)
 	}
-	//adjustedPlayerDest := rl.NewRectangle(p.playerDest.X-p.playerDest.Width/2, p.playerDest.Y-p.playerDest.Height/2, p.playerDest.Width, p.playerDest.Height)
-
-	// if p.playerIsJumping {
-	// 	p.playerDest.Y -= 0
-
-	// 	fmt.Println("le personnage peut sauter", p.playerCanJump)
-	// } else {
-	// 	fmt.Println("le personnage ne peux pas sauter", p.playerCanJump)
-	// }
 
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
@@ -263,36 +219,18 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 
 }
 func (g *gameEngine) drawScene() {
-	// for i := 0; i < len(g.tileMap); i++ { // sert à mapper la carte :
-	// 	if g.tileMap[i] != 0 {
-	// 		g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
-	// 		g.tileDest.Y = g.tileDest.Height * float32(i%g.mapH)
-	// 		g.objDest.X = g.tileDest.X
-	// 		g.objDest.Y = g.tileDest.Y
-	// 		if g.srcMap[i] == "p" {
-	// 			g.tex = g.textureMap
-	// 			g.objSrc = g.plateformSpriteSrc
-	// 			g.objDest = g.plateformSpriteDest
-	// 		}
-	// 		g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
-	// 		g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)%int(g.textureMap.Width/int32(g.tileSrc.Width)))
-	// 	}
-	// }
-	
+
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
 	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
 	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 39
-	
+
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.White)
-	
+
 	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
-	
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc,g.plateformSpriteDest , rl.NewVector2(0, 0), 0, rl.White)
-	//rl.DrawTexturePro(g.gargantuaTex, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.Red)
-	//rl.DrawRectangleV(rl.NewVector2(g.plateformSpriteDest.X,g.plateformSpriteDest.Y ), rl.NewVector2(g.plateformSpriteDest.Width,g.plateformSpriteDest.Height ),rl.Beige)
+
+	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
-	//rl.DrawRectangleV(rl.NewVector2(0,0), rl.NewVector2(40,40), rl.Blue)
 }
 
 func (p *gameEngine) quit() {

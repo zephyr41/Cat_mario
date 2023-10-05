@@ -1,13 +1,11 @@
 package main
 
-import rl "github.com/gen2brain/raylib-go/raylib"
+import (
 
-type ObjectWhoMoove struct {
-	Position rl.Vector2
 
-	// de tel objet c'est ça
-	// objectif, en affiché un simple
-}
+	rl "github.com/gen2brain/raylib-go/raylib"
+	"github.com/lafriks/go-tiled"
+)
 
 type gameEngine struct {
 	/* afficher l'explication
@@ -47,8 +45,8 @@ type gameEngine struct {
 	gargantuaSrc        rl.Rectangle
 	gargantuaSpeed      int
 	framecountGargantua int
-	playerJumpVelocity float32
-	testjump bool
+	playerJumpVelocity  float32
+	testjump            bool
 
 	/* afficher l'explication
 	   ##########################################################
@@ -66,15 +64,14 @@ type gameEngine struct {
 
 	playerSpeed     float32
 	playerIsJumping bool
-	playerCanJump bool
+	playerCanJump   bool
 	gravity         float32
-	jumpHmax int
-
+	jumpHmax        int
 
 	playerFrame int
 
 	// playerCanJump bool
-	cam2d         rl.Camera2D
+	cam2d rl.Camera2D
 
 	hitboxHeight       float32
 	hitboxWidth        float32
@@ -83,13 +80,15 @@ type gameEngine struct {
 	adjustedHitbox     rl.Rectangle
 	adjustedPlayerDest rl.Rectangle
 
-    tileDest rl.Rectangle
-    tileSrc rl.Rectangle
-    tileMap []int
-    tileMapLink string
-    srcMap []string
-    mapFileWidth, mapFileHeight int
-
+	// tileDest                    rl.Rectangle
+	// tileSrc                     rl.Rectangle
+	// tileMap                     []int
+	mapPath                     string
+	// srcMap                      []string
+	// mapFileWidth, mapFileHeight int
+	// img                         image.NRGBA
+	// mapObject                   tiled.Map
+	myGroup                     tiled.Group
 }
 
 func main() {
@@ -101,3 +100,4 @@ func main() {
 	game.initGame()
 
 }
+
