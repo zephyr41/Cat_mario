@@ -321,7 +321,7 @@ func (p *gameEngine) quit() {
 // 		case MenuDisplay:
 // 			// Menue
 // 			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
-
+//A
 // 			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
 
 // 			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter :", 100, 450, 35, rl.White)
