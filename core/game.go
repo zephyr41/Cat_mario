@@ -39,7 +39,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
 	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
-	p.gargantuaDest = rl.NewRectangle(0, -200, 300, 300)
+	p.gargantuaDest = rl.NewRectangle(35, -80, 100, 100)
 	p.gargantuaSpeed = 2
 
 	// source du joueur
@@ -230,7 +230,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
 	rl.BeginMode2D(g.cam2d)
-	rl.DrawText("CAT MARIO", 0, 0, 35, rl.White)
+	rl.DrawText("CAT MARIO", -15, 0, 35, rl.White)
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}
@@ -257,7 +257,7 @@ func (g *gameEngine) drawScene() {
 	// 	// 40
 	// }
 	// rl.NewRectangle(x max 32*32 mais = 32, y = reste , 32,32)
-	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.White)
+	
 	//for i <=
 	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 
