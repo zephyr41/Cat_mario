@@ -81,21 +81,31 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 }
 
 func (g *gameEngine) loadMap() {
-	file, err := os.Open("../assets/cat-mario.tmx") // va chercher le fichier
+	file, err := os.Open("../assets/cat-mario.tmx")
 	if err != nil {
 		fmt.Println("Erreur lors de l'ouverture du fichier:", err)
 		return
 	}
-	defer file.Close() // Assurez-vous de fermer le fichier à la fin
+	defer file.Close()
 
-	// Créer un décodeur XML 
 	decoder := xml.NewDecoder(file)
 
-	g.myGroup.UnmarshalXML(decoder, xml.StartElement{}) // interprete fichier décoder ainsi que la première balise qu'il trouve dans le fihcier xml
+	// Lire la première balise
+	token, err := decoder.Token()
+	if err != nil {
+		fmt.Println("Erreur lors de la lecture de la première balise:", err)
+		return
+	}
 
-	g.myGroup.DecodeGroup(&g.mapObject) // on lui donne la map à décoder
-	fmt.Println("Contenu de la carte décoder :")
-    fmt.Printf("%+v\n", g.mapObject)
+	// Afficher la première balise
+	fmt.Println("Première balise:", token)
+
+	// Réinitialiser le fichier pour le décodage
+	g.myGroup.UnmarshalXML(decoder, xml.StartElement{})
+	g.myGroup.DecodeGroup(&g.mapObject)
+
+	fmt.Println("Contenu de la carte décoder:")
+	fmt.Printf("%+v\n", g.mapObject)
 }
 func (w *gameEngine) input() { // récupère les inputs de la map
 

@@ -3,7 +3,7 @@
  <tileset firstgid="1" name="TX_Tileset_Ground" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <image source="TX_Tileset_Ground.png" width="512" height="512"/>
  </tileset>
- <tileset firstgid="257" source="../../../../TX_Village_Props.tsx"/>
+ <tileset firstgid="257" source="TX_Village_Props.tsx"/>
  <tileset firstgid="1281" source="../../../../TX_Tileset_Ground.tsx"/>
  <layer id="15" name="Tile Layer 4" width="42" height="24">
   <data encoding="csv">
