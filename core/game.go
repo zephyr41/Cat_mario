@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"regexp"
+	"strconv"
+	"strings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
-	"github.com/lafriks/go-tiled"
-	"github.com/lafriks/go-tiled/render"
 )
 
 func (p *gameEngine) Init(width int32, height int32, title string, isRunning bool, dead bool, score int) { // initialise les propriété de la fenetre
@@ -28,12 +30,11 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.InitWindow(p.width, p.heigh, p.title)
 	rl.SetTargetFPS(60) // définit les fps a x
 	p.isRunning = true
-	p.tex = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
 	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1000, 394)
 	// check combien de 32x32 par tuile,
 	p.plateformSpriteDest = rl.NewRectangle(0, 30, 153, 49)
-
+	p.tex = rl.LoadTexture("assets/TX_Tileset_Ground.png")
 	//p.objDest = rl.NewRectangle(0, 0, 306, 166)
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
 
@@ -46,14 +47,15 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
 	p.playerDest = rl.NewRectangle(100, 0, 32, 32)                              // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
-	// p.tileSrc = rl.NewRectangle(1550, 110, 113, 185)
-	// p.tileDest = rl.NewRectangle(0, 0, 153, 83)
+	p.tileSrc = rl.NewRectangle(0, 0, 0, 0)
+	p.tileDest = rl.NewRectangle(0, 0, 0, 0)
 	// initialistion du saut du joueur :
 	p.playerCanJump = false
 	p.playerIsJumping = false
 	p.playerSpeed = 1.45
 	p.gravity = 4.15
-
+	p.tileDest = rl.NewRectangle(0, 0, 16, 16)
+	p.tileSrc = rl.NewRectangle(0, 0, 16, 16)
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 4.0)
 
@@ -67,7 +69,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.hitboxX = p.playerDest.X + p.playerDest.Width/4  // Décalage horizontal pour centrer
 	p.hitboxY = p.playerDest.Y + p.playerDest.Height/4 // Décalage vertical pour centrer
 	p.adjustedHitbox = rl.NewRectangle(p.hitboxX, p.hitboxY, p.hitboxWidth, p.hitboxHeight)
-	p.mapPath = "../assets/cat-mario-map.tmx"
+	p.mapPath = "../assets/one.map"
 	p.loadMap()
 	for p.isRunning {
 		//rl.UpdateMusicStream(p.musicMenu)
@@ -80,43 +82,60 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.SetExitKey(0) // définit les boutons pour être ouvert fermé ?
 
 }
-
 func (g *gameEngine) loadMap() {
+	f, err := os.ReadFile(g.mapPath)
 
-	gameMap, err := tiled.LoadFile(g.mapPath)
 	if err != nil {
-		fmt.Printf("error parsing map: %s", err.Error())
-		os.Exit(2)
+		log.Fatal(err)
 	}
 
+	re := regexp.MustCompile(`\r?\n`)
+	remNewLines := re.ReplaceAllString(string(f), " ")
 
+	//a := "5 5\n1 1 1 1 1\n1 8 1 1 1\n1 2 3 1 1\n1 4 1 11 01\n1 1 1 02 01\ng g g g g\ng g g g g\ng g g g g\ng g g g g\ng g l l w"
+	//remNewLines := strings.Replace(a, "\n", " ", -1)
 
-	// You can also render the map to an in-memory image for direct
-	// use with the default Renderer, or by making your own.
-	renderer, err := render.NewRenderer(gameMap)
-	if err != nil {
-		fmt.Printf("map unsupported for rendering: %s", err.Error())
-		os.Exit(2)
+	//fmt.Println("remNewLines:", remNewLines)
+
+	sliced := strings.Split(remNewLines, " ")
+	//fmt.Println("sliced:", sliced)
+	g.mapW = -1
+	g.mapH = -1
+	for i := 0; i < len(sliced); i++ {
+
+		s, _ := strconv.ParseInt(sliced[i], 10, 64)
+		//fmt.Println("slice", i, sliced[i], "s", s)
+		m := int(s)
+		if g.mapW == -1 {
+			g.mapW = m
+
+		} else if g.mapH == -1 {
+			g.mapH = m
+		} else if i < g.mapW*g.mapH+2 {
+			g.tileMap = append(g.tileMap, m)
+		} else {
+			g.srcMap = append(g.srcMap, sliced[i])
+		}
+
 	}
-
-	// Render just layer 0 to the Renderer.
-	err = renderer.RenderLayer(0)
-	if err != nil {
-		fmt.Printf("layer unsupported for rendering: %s", err.Error())
-		os.Exit(2)
+	if len(g.tileMap) > g.mapW*g.mapH {
+		g.tileMap = g.tileMap[:len(g.tileMap)-1]
 	}
-
-	// Get a reference to the Renderer's output, an image.NRGBA struct.
-	g.img = renderer.Result
-	fmt.Println(g.img)
-
-	// Clear the render result after copying the output if separation of
-	// layers is desired.
-	renderer.Clear()
-
-	// And so on. You can also export the image to a file by using the
-	// Renderer's Save functions.
+	/*
+		fmt.Println("tileMap", tileMap)
+		fmt.Println("srcMap", srcMap)
+		fmt.Println("mapW", mapW)
+		fmt.Println("mapH", mapH)
+	*/
+	/*
+		mapW = 5
+		mapH = 5
+		for i := 0; i < (mapW * mapH); i++ {
+			tileMap = append(tileMap, 1)
+		}
+	*/
 }
+
 func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
@@ -244,6 +263,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 
 }
 func (g *gameEngine) drawScene() {
+
 	// ta fais une boucle qui parourt, et pour chaque nombre t'initialise la source et la destion,
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
 	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
@@ -257,8 +277,32 @@ func (g *gameEngine) drawScene() {
 	// 	// 40
 	// }
 	// rl.NewRectangle(x max 32*32 mais = 32, y = reste , 32,32)
-	
+
 	//for i <=
+	fmt.Println("la taille de g.tileMap = ", g.tileMap)
+	for i := 0; i < len(g.tileMap); i++ {
+		fmt.Println("la taille de g.tileMap = ", i)
+		if g.tileMap[i] != 0 {
+			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
+			fmt.Println(g.tileDest.X)
+			g.tileDest.Y = g.tileDest.Height * float32(i/g.mapW)
+			fmt.Println(g.tileDest.Y)
+
+			if g.tileSrc.Width != 0 {
+				g.tileSrc.X += 130
+			} else {
+				g.tileSrc.X += 130
+			}
+			if g.tileSrc.Height != 0 {
+				g.tileSrc.Y += 30
+			} else {
+				g.tileSrc.Y += 300
+			}
+			fmt.Println("element ajouté", g.tileDest.X, g.tileDest.Y)
+			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(0, 0), 0, rl.Red)
+
+		}
+	}
 	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 
 	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)

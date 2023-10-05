@@ -1,10 +1,7 @@
 package main
 
 import (
-	"image"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
-	"github.com/lafriks/go-tiled"
 )
 
 type gameEngine struct {
@@ -87,9 +84,22 @@ type gameEngine struct {
 	// srcMap                      []string
 	// mapFileWidth, mapFileHeight int
 	// img                         image.NRGBA
-	mapObject tiled.Map
-	myGroup   tiled.Group
-	img       *image.NRGBA
+	// gameMap      *tiled.Map
+	// myGroup      tiled.Group
+	// img          *image.NRGBA
+	mapW         int
+	mapH         int
+	tileDest     rl.Rectangle
+	tileSrc      rl.Rectangle
+	tileMap      []int
+	srcMap       []string
+	grassSprite  rl.Texture2D
+	hillSprite   rl.Texture2D
+	fenceSprite  rl.Texture2D
+	houseSprite  rl.Texture2D
+	waterSprite  rl.Texture2D
+	tilledSprite rl.Texture2D
+
 }
 
 func main() {
