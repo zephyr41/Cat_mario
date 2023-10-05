@@ -1,7 +1,7 @@
 package main
 
 import (
-
+	"image"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 	"github.com/lafriks/go-tiled"
@@ -83,12 +83,13 @@ type gameEngine struct {
 	// tileDest                    rl.Rectangle
 	// tileSrc                     rl.Rectangle
 	// tileMap                     []int
-	mapPath                     string
+	mapPath string
 	// srcMap                      []string
 	// mapFileWidth, mapFileHeight int
 	// img                         image.NRGBA
-	mapObject                   tiled.Map
-	myGroup                     tiled.Group
+	mapObject tiled.Map
+	myGroup   tiled.Group
+	img       *image.NRGBA
 }
 
 func main() {
@@ -100,4 +101,3 @@ func main() {
 	game.initGame()
 
 }
-

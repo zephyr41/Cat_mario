@@ -1,11 +1,12 @@
 package main
 
 import (
-	"encoding/xml"
 	"fmt"
 	"os"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"github.com/lafriks/go-tiled"
+	"github.com/lafriks/go-tiled/render"
 )
 
 func (p *gameEngine) Init(width int32, height int32, title string, isRunning bool, dead bool, score int) { // initialise les propriété de la fenetre
@@ -30,7 +31,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.tex = rl.LoadTexture("../assets/Mossy_TileSet.png")
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
 	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1000, 394)
-
+	// check combien de 32x32 par tuile,
 	p.plateformSpriteDest = rl.NewRectangle(0, 30, 153, 49)
 
 	//p.objDest = rl.NewRectangle(0, 0, 306, 166)
@@ -38,8 +39,8 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
 	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
-	p.gargantuaDest = rl.NewRectangle(0, 0, 700, 700)
-	p.gargantuaSpeed = 1
+	p.gargantuaDest = rl.NewRectangle(0, -200, 300, 300)
+	p.gargantuaSpeed = 2
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
@@ -66,7 +67,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.hitboxX = p.playerDest.X + p.playerDest.Width/4  // Décalage horizontal pour centrer
 	p.hitboxY = p.playerDest.Y + p.playerDest.Height/4 // Décalage vertical pour centrer
 	p.adjustedHitbox = rl.NewRectangle(p.hitboxX, p.hitboxY, p.hitboxWidth, p.hitboxHeight)
-	p.mapPath = "../assets/cat-mario.tmx"
+	p.mapPath = "../assets/cat-mario-map.tmx"
 	p.loadMap()
 	for p.isRunning {
 		//rl.UpdateMusicStream(p.musicMenu)
@@ -81,31 +82,40 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 }
 
 func (g *gameEngine) loadMap() {
-	file, err := os.Open("../assets/cat-mario.tmx")
-	if err != nil {
-		fmt.Println("Erreur lors de l'ouverture du fichier:", err)
-		return
-	}
-	defer file.Close()
 
-	decoder := xml.NewDecoder(file)
-
-	// Lire la première balise
-	token, err := decoder.Token()
+	gameMap, err := tiled.LoadFile(g.mapPath)
 	if err != nil {
-		fmt.Println("Erreur lors de la lecture de la première balise:", err)
-		return
+		fmt.Printf("error parsing map: %s", err.Error())
+		os.Exit(2)
 	}
 
-	// Afficher la première balise
-	fmt.Println("Première balise:", token)
 
-	// Réinitialiser le fichier pour le décodage
-	g.myGroup.UnmarshalXML(decoder, xml.StartElement{})
-	g.myGroup.DecodeGroup(&g.mapObject)
 
-	fmt.Println("Contenu de la carte décoder:")
-	fmt.Printf("%+v\n", g.mapObject)
+	// You can also render the map to an in-memory image for direct
+	// use with the default Renderer, or by making your own.
+	renderer, err := render.NewRenderer(gameMap)
+	if err != nil {
+		fmt.Printf("map unsupported for rendering: %s", err.Error())
+		os.Exit(2)
+	}
+
+	// Render just layer 0 to the Renderer.
+	err = renderer.RenderLayer(0)
+	if err != nil {
+		fmt.Printf("layer unsupported for rendering: %s", err.Error())
+		os.Exit(2)
+	}
+
+	// Get a reference to the Renderer's output, an image.NRGBA struct.
+	g.img = renderer.Result
+	fmt.Println(g.img)
+
+	// Clear the render result after copying the output if separation of
+	// layers is desired.
+	renderer.Clear()
+
+	// And so on. You can also export the image to a file by using the
+	// Renderer's Save functions.
 }
 func (w *gameEngine) input() { // récupère les inputs de la map
 
@@ -186,16 +196,17 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 		}
 		if p.FrameCount%8 == 1 {
 			p.playerFrame++
+
 		}
 
 	}
 	p.FrameCount++
-	if p.playerFrame > 3 {
-		p.playerFrame = 0
-	}
-	if p.framecountGargantua%12 == 1 {
+	if p.FrameCount%12 == 1 {
 		p.gargantuaSrc.X += 200
 		p.gargantuaSrc.Y += 200
+	}
+	if p.playerFrame > 3 {
+		p.playerFrame = 0
 	}
 
 	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame)
@@ -233,17 +244,25 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 
 }
 func (g *gameEngine) drawScene() {
-
+	// ta fais une boucle qui parourt, et pour chaque nombre t'initialise la source et la destion,
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
 	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
 	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 39
 
+	// for i:= 0; i < g.img;i++{
+	// 	src := g.img[i] //32 --> le reste = y est 32 ou - = le x
+	// 	dest :=
+	// 	rl.DrawTexturePro(src,dest,rl.newVector2(0,0),0, rl.White)
+	// 	g.pxlateformSpriteDest = g.img[i]
+	// 	// 40
+	// }
+	// rl.NewRectangle(x max 32*32 mais = 32, y = reste , 32,32)
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32(g.hitboxX+g.hitboxWidth), int32(g.hitboxY+g.hitboxHeight), rl.White)
-
+	//for i <=
 	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 
 	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
-	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(10, 10), 0, rl.White)
+	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
 }
 
