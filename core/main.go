@@ -62,7 +62,7 @@ type gameEngine struct {
 	playerIsJumping bool
 	playerCanJump   bool
 	gravity         float32
-	jumpHmax        int
+	jumpHmax        float32
 
 	playerFrame int
 

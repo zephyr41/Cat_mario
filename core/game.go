@@ -48,7 +48,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
-	p.playerDest = rl.NewRectangle(40, 300, 32, 32)                             // met une zone ou afficher ce bout d'image
+	p.playerDest = rl.NewRectangle(40, 600, 32, 32)                             // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 
 	p.tileDest = rl.NewRectangle(0, 0, 32, 32)
@@ -149,6 +149,13 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		// pareil pour tous
 
 	}
+	// if rl.IsKeyDown(rl.KeyDown) { // key left
+	// 	w.playerDest.Y += w.playerSpeed
+
+	// 	w.playerMoving = true
+	// 	w.playerDown = true
+	// 	w.playerDir = 18
+	// 	w.adjustedHitbox.Y += w.playerSpeed
 
 	// }
 	if rl.IsKeyDown(rl.KeyLeft) { // key left
@@ -182,13 +189,30 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
 
-	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.tileDest) && !p.playerCanJump { // sert à généré la gravité
+	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
 		p.playerDest.Y += 1
 		p.playerMoving = true
+		p.playerUp = false
 	}
-	if rl.CheckCollisionRecs(p.adjustedHitbox, p.test) {
-		fmt.Println("collision entre chat", p.adjustedHitbox, " et tile dest", p.tileDest)
-		p.playerDest.Y -= 1
+	// if rl.CheckCollisionRecs(p.adjustedHitbox, p.test) {
+	// 	fmt.Println("collision entre chat", p.adjustedHitbox, " et tile dest", p.tileDest)
+	// 	p.playerDest.Y -= 1
+	// }
+
+	if !rl.CheckCollisionRecs(p.playerDest, p.tileDest) && p.playerUp {
+		p.playerMoving = true
+		fmt.Println("Je saute ici quand j'appuie sur up")
+
+		fmt.Println(p.playerDest.Y)
+		p.jumpHmax = (p.playerDest.Y - 500 + p.playerDest.Y) // faire en sorte de récupéré les coordonnées de p.playerDest Y est tant qu'on y est pas le perosnnage saute, comme ça ou qu'il est il peut sauter
+
+		p.playerDest.Y -= 10
+		fmt.Println(p.jumpHmax)
+		if p.playerDest.Y >= p.jumpHmax {
+			p.playerCanJump = false
+			p.playerIsJumping = false
+		}
+
 	}
 
 	// if rl.CheckCollisionRecs(p.adjustedHitbox, p.tileDest) {
@@ -230,7 +254,7 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
-	p.playerUp, p.playerDown, p.playerRight, p.playerLeft = false, false, false, false
+	p.playerDown, p.playerRight, p.playerLeft = false, false, false
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
@@ -285,21 +309,22 @@ func (g *gameEngine) drawScene() {
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.tex.Width/int32(g.tileSrc.Width)))
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)/int(g.tex.Width/int32(g.tileSrc.Width)))
 			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
-			rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), g.tileDest.ToInt32().Width, g.tileDest.ToInt32().Height, rl.Blue)
-			if rl.CheckCollisionRecs(g.tileDest, g.playerDest){
+			//rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), g.tileDest.ToInt32().Width, g.tileDest.ToInt32().Height, rl.Blue)
+			if rl.CheckCollisionRecs(g.playerDest, g.tileDest) {
+				g.playerMoving = true
+				g.playerIsJumping = false
+				g.playerCanJump = true
 				g.playerDest.Y -= 1
-				fmt.Println("collision")
+
+				// le joueur doit passer de 38 a
 			}
 
 		}
 
 	}
-	fmt.Println("Position du chat : ", g.adjustedHitbox)
-	fmt.Println("Position du carrée : ", g.tileDest.ToInt32().X, g.tileDest.Y)
-	g.test = rl.NewRectangle(float32(g.tileDest.X), (g.tileDest.Y), 100.0, 100.0)
-	
-	rl.DrawRectangleLines(int32(g.test.X), int32(g.test.Y), g.test.ToInt32().Width, g.test.ToInt32().Height, rl.Blue)
-	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32((g.hitboxX+g.hitboxWidth)/4), int32((g.hitboxY+g.hitboxHeight)/4), rl.White)
+
+	// rl.DrawRectangleLines(int32(g.test.X), int32(g.test.Y), g.test.ToInt32().Width, g.test.ToInt32().Height, rl.Blue)
+	// rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32((g.hitboxX+g.hitboxWidth)/4), int32((g.hitboxY+g.hitboxHeight)/4), rl.White)
 	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
