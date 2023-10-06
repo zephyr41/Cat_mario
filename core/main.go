@@ -87,13 +87,10 @@ type gameEngine struct {
 	// myGroup      tiled.Group
 	// img          *image.NRGBA
 
-	grassSprite  rl.Texture2D
-	hillSprite   rl.Texture2D
-	fenceSprite  rl.Texture2D
-	houseSprite  rl.Texture2D
-	waterSprite  rl.Texture2D
-	tilledSprite rl.Texture2D
-	tex          rl.Texture2D
+	grassSprite rl.Texture2D
+	propsSprite rl.Texture2D
+
+	tex rl.Texture2D
 
 	tileDest   rl.Rectangle
 	tileSrc    rl.Rectangle

@@ -30,12 +30,9 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.SetTargetFPS(60) // définit les fps a x
 	p.isRunning = true
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
-	p.grassSprite = rl.LoadTexture("../assets/Grass hill tiles v.2.png")
-	p.hillSprite = rl.LoadTexture("../assets/TX_Village_Props.png")
-	p.fenceSprite = rl.LoadTexture("../assets/Fences.png")
-	p.houseSprite = rl.LoadTexture("../assets/WoodenHouse.png")
-	p.waterSprite = rl.LoadTexture("../assets/water.png")
-	p.tilledSprite = rl.LoadTexture("assets/TX_Village_Props.png")
+	p.grassSprite = rl.LoadTexture("../assets/TX_Tileset_Ground.png")
+	p.propsSprite = rl.LoadTexture("../assets/TX_Village_Props.png")
+
 	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1000, 394)
 	// check combien de 32x32 par tuile,
 	p.plateformSpriteDest = rl.NewRectangle(0, 30, 153, 49)
@@ -294,27 +291,8 @@ func (g *gameEngine) drawScene() {
 			if g.srcMap[i] == "g" {
 				g.tex = g.grassSprite
 			}
-			if g.srcMap[i] == "l" {
-				g.tex = g.hillSprite
-			}
-			if g.srcMap[i] == "f" {
-				g.tex = g.fenceSprite
-			}
-			if g.srcMap[i] == "h" {
-				g.tex = g.houseSprite
-			}
-			if g.srcMap[i] == "w" {
-				g.tex = g.waterSprite
-			}
-			if g.srcMap[i] == "t" {
-				g.tex = g.tilledSprite
-			}
-
-			if g.srcMap[i] == "h" || g.srcMap[i] == "f" {
-				g.tileSrc.X = 0
-				g.tileSrc.Y = 0
-				rl.DrawTexturePro(g.grassSprite, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
-
+			if g.srcMap[i] == "p" {
+				g.tex = g.propsSprite
 			}
 
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.tex.Width/int32(g.tileSrc.Width)))
