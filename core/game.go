@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -47,7 +48,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 
 	// source du joueur
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
-	p.playerDest = rl.NewRectangle(100, 0, 32, 32)                              // met une zone ou afficher ce bout d'image
+	p.playerDest = rl.NewRectangle(40, 300, 32, 32)                             // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 
 	p.tileDest = rl.NewRectangle(0, 0, 32, 32)
@@ -60,7 +61,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.tileDest = rl.NewRectangle(0, 0, 16, 16)
 	p.tileSrc = rl.NewRectangle(0, 0, 32, 32)
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
-		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 4.0)
+		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/4), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 4.0)
 
 	// rl.InitAudioDevice()
 	//p.musicMenu = rl.LoadMusicStream("../audio/peace.wav")
@@ -139,51 +140,49 @@ func (g *gameEngine) loadMap() {
 		}
 	*/
 }
-
 func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
-		w.playerDest.Y -= w.playerSpeed
-		w.playerMoving = true // dit que le joueur est en mouvement
-		w.playerDir = 17      // permet de set quel frame on veut dans la grille de sprite
-		w.playerUp = true     // dit qu'il va en haut
+		//w.adjustedHitbox.Y -= w.playerSpeed
+		w.playerUp = true // dit qu'il va en haut
+		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
 		// pareil pour tous
-	}  
-	if rl.IsKeyDown(rl.KeyDown) { // key left
-		w.playerDest.Y += w.playerSpeed
-		w.playerMoving = true
-		w.playerDown = true
-		w.playerDir = 18
-	}  
+
+	}
+
+	// }
 	if rl.IsKeyDown(rl.KeyLeft) { // key left
 		w.playerDest.X -= w.playerSpeed
 		w.playerMoving = true
 		w.playerDir = 5
 		w.playerLeft = true
-	} 
+		w.adjustedHitbox.X -= w.playerSpeed
+
+	}
+
 	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 		w.playerMoving = true
 		w.playerRight = true
 		w.playerDir = 6
-	} 
-	 if rl.IsKeyPressed(rl.KeyM) { // key left
+		w.adjustedHitbox.X += w.playerSpeed
+
+	}
+
+	if rl.IsKeyPressed(rl.KeyM) { // key left
 		w.musicIsPaused = !w.musicIsPaused
 
 		w.playerUp = true
 	}
+
 }
 
 func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
+	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
+
 	if p.playerMoving {
-		if p.playerUp {
-			p.playerDest.Y -= p.playerSpeed // définit par rapport a renderTexture pro pour déduire la vitesse et la re atribuée
-		}
-		if p.playerDown {
-			p.playerDest.Y += p.playerSpeed
-		}
 		if p.playerLeft {
 			p.playerDest.X -= p.playerSpeed
 		}
@@ -192,21 +191,29 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 		}
 		if p.FrameCount%8 == 1 {
 			p.playerFrame++
+
 		}
 
 	}
 	p.FrameCount++
+	if p.FrameCount%12 == 1 {
+		p.gargantuaSrc.X += 200
+		p.gargantuaSrc.Y += 200
+	}
 	if p.playerFrame > 3 {
 		p.playerFrame = 0
 	}
+
 	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame)
 	p.playerSrc.Y = p.playerSrc.Width * float32(p.playerDir)
+
 	rl.UpdateMusicStream(p.musicMenu)
 	if p.musicIsPaused {
 		rl.PauseMusicStream(p.musicMenu)
 	} else {
 		rl.ResumeMusicStream(p.musicMenu)
 	}
+
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
 	p.playerUp, p.playerDown, p.playerRight, p.playerLeft = false, false, false, false
@@ -236,7 +243,7 @@ func (g *gameEngine) drawScene() {
 	// ta fais une boucle qui parourt, et pour chaque nombre t'initialise la source et la destion,
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
 	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
-	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 39
+	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 49
 
 	// for i:= 0; i < g.img;i++{
 	// 	src := g.img[i] //32 --> le reste = y est 32 ou - = le x
@@ -250,8 +257,8 @@ func (g *gameEngine) drawScene() {
 	//for i <=
 	for i := 0; i < len(g.tileMap); i++ {
 		if g.tileMap[i] != 0 {
-			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
-			g.tileDest.Y = g.tileDest.Height * float32(i/g.mapW)
+			g.tileDest.X = g.tileDest.Width*float32(i%g.mapW) - 16
+			g.tileDest.Y = g.tileDest.Height*float32(i/g.mapW) - 16
 
 			if g.srcMap[i] == "g" {
 				g.tex = g.grassSprite
@@ -262,14 +269,26 @@ func (g *gameEngine) drawScene() {
 
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.tex.Width/int32(g.tileSrc.Width)))
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)/int(g.tex.Width/int32(g.tileSrc.Width)))
-
 			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
-
+			rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), int32(g.tileDest.Width), int32(g.tileDest.Height), rl.Beige)
+			fmt.Println(g.tileDest)
+			if !rl.CheckCollisionRecs(g.adjustedHitbox, g.tileDest) && !g.playerCanJump { // sert à généré la gravité
+				p.playerDest.Y += 4
+				p.playerMoving = true
+			}
+			if rl.CheckCollisionRecs(g.adjustedHitbox, g.tileDest) {
+				g.playerMoving = true
+				g.playerIsJumping = true
+				g.playerCanJump = false
+				g.playerDest.Y -= 1
+				fmt.Println("colision a cet emplacement", g.tileDest)
+				// le joueur doit passer de 38 a
+			}
 		}
+
 	}
 
-	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
-
+	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32((g.hitboxX+g.hitboxWidth)/4), int32((g.hitboxY+g.hitboxHeight)-290), rl.White)
 	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
