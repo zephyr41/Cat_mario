@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -201,10 +200,10 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	// 	p.playerDest.Y -= 1
 	// }
 
-	fmt.Println("le joueur est il entrain de sauté ", p.playerIsJumping)
-	fmt.Println("le joueur peux il sauté ", p.playerCanJump)
-	fmt.Println("le joueur appuie t'il sur haut ? ", p.playerUp)
-	if !rl.CheckCollisionRecs(p.playerDest, p.tileDest) && p.playerCanJump {
+	// fmt.Println("le joueur est il entrain de sauté ", p.playerIsJumping)
+	// fmt.Println("le joueur peux il sauté ", p.playerCanJump)
+	// fmt.Println("le joueur appuie t'il sur haut ? ", p.playerUp)
+	if !rl.CheckCollisionRecs(p.playerDest, p.tileDest) && p.playerCanJump && p.playerUp {
 		p.playerMoving = true
 		p.jumpHmax = int(p.tileDest.Y) - 160
 		p.jumpHmax -= 5
@@ -340,6 +339,8 @@ func (p *gameEngine) quit() {
 	rl.UnloadTexture(p.textureMap)
 	rl.UnloadTexture(p.gargantuaTex)
 	rl.UnloadMusicStream(p.musicMenu)
+	rl.UnloadTexture(p.propsSprite)
+	rl.UnloadTexture(p.grassSprite)
 	rl.CloseAudioDevice()
 	rl.CloseWindow()
 }
