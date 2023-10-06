@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -31,12 +30,12 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.SetTargetFPS(60) // définit les fps a x
 	p.isRunning = true
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
-	p.grassSprite = rl.LoadTexture("../assets/gargantua.png")
-	p.hillSprite = rl.LoadTexture("../assets/gargantua.png")
-	p.fenceSprite = rl.LoadTexture("../assets/gargantua.png")
-	p.houseSprite = rl.LoadTexture("../assets/gargantua.png")
-	p.waterSprite = rl.LoadTexture("../assets/gargantua.png")
-	p.tilledSprite = rl.LoadTexture("../assets/gargantua.png")
+	p.grassSprite = rl.LoadTexture("../assets/Grass hill tiles v.2.png")
+	p.hillSprite = rl.LoadTexture("../assets/TX_Village_Props.png")
+	p.fenceSprite = rl.LoadTexture("../assets/Fences.png")
+	p.houseSprite = rl.LoadTexture("../assets/WoodenHouse.png")
+	p.waterSprite = rl.LoadTexture("../assets/water.png")
+	p.tilledSprite = rl.LoadTexture("assets/TX_Village_Props.png")
 	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1000, 394)
 	// check combien de 32x32 par tuile,
 	p.plateformSpriteDest = rl.NewRectangle(0, 30, 153, 49)
@@ -54,8 +53,8 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerDest = rl.NewRectangle(100, 0, 32, 32)                              // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 
-	p.tileDest = rl.NewRectangle(0, 0, 16, 16)
-	p.tileSrc = rl.NewRectangle(0, 0, 16, 16)
+	p.tileDest = rl.NewRectangle(0, 0, 32, 32)
+	p.tileSrc = rl.NewRectangle(0, 0, 32, 32)
 	// initialistion du saut du joueur :
 	p.playerCanJump = false
 	p.playerIsJumping = false
@@ -287,7 +286,6 @@ func (g *gameEngine) drawScene() {
 	// rl.NewRectangle(x max 32*32 mais = 32, y = reste , 32,32)
 
 	//for i <=
-
 	for i := 0; i < len(g.tileMap); i++ {
 		if g.tileMap[i] != 0 {
 			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
@@ -318,20 +316,18 @@ func (g *gameEngine) drawScene() {
 				rl.DrawTexturePro(g.grassSprite, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 
 			}
-			fmt.Println("la source de la map est ", g.tileSrc.Width)
-			test := float32((g.tileMap[i] - 1) % int(g.tex.Width/int32(g.tileSrc.Width)))
-			fmt.Println("le chiffre multiplicateur est ", test)
+
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.tex.Width/int32(g.tileSrc.Width)))
-			fmt.Println("le resultat est : ", g.tileSrc.X)
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)/int(g.tex.Width/int32(g.tileSrc.Width)))
 
 			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 
 		}
 	}
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 
-	rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
+	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
+
+	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
 }
