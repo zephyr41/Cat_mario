@@ -190,8 +190,10 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.playerSrc.X = 7
 
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
-		p.playerDest.Y += 1
+		p.playerDest.Y += 5
 		p.playerMoving = true
+		p.playerIsJumping = true
+		p.playerCanJump = false
 		p.playerUp = false
 	}
 	// if rl.CheckCollisionRecs(p.adjustedHitbox, p.test) {
@@ -199,18 +201,19 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	// 	p.playerDest.Y -= 1
 	// }
 
-	if !rl.CheckCollisionRecs(p.playerDest, p.tileDest) && p.playerUp {
+	fmt.Println("le joueur est il entrain de sauté ", p.playerIsJumping)
+	fmt.Println("le joueur peux il sauté ", p.playerCanJump)
+	fmt.Println("le joueur appuie t'il sur haut ? ", p.playerUp)
+	if !rl.CheckCollisionRecs(p.playerDest, p.tileDest) && p.playerCanJump {
 		p.playerMoving = true
-		fmt.Println("Je saute ici quand j'appuie sur up")
-
-		fmt.Println(p.playerDest.Y)
-		p.jumpHmax = (p.playerDest.Y - 500 + p.playerDest.Y) // faire en sorte de récupéré les coordonnées de p.playerDest Y est tant qu'on y est pas le perosnnage saute, comme ça ou qu'il est il peut sauter
-
-		p.playerDest.Y -= 10
-		fmt.Println(p.jumpHmax)
-		if p.playerDest.Y >= p.jumpHmax {
+		p.jumpHmax = int(p.tileDest.Y) - 160
+		p.jumpHmax -= 5
+		p.playerDest.Y -= 5
+		if p.playerDest.Y <= float32(p.jumpHmax) {
+			//p.jumpHmax = p.playerDest.Y // faire en sorte de récupéré les coordonnées de p.playerDest Y est tant qu'on y est pas le perosnnage saute, comme ça ou qu'il est il peut sauter
 			p.playerCanJump = false
-			p.playerIsJumping = false
+			p.playerIsJumping = true
+			p.playerUp = false
 		}
 
 	}
@@ -255,6 +258,7 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
 	p.playerDown, p.playerRight, p.playerLeft = false, false, false
+	p.playerUp = false
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
@@ -310,10 +314,11 @@ func (g *gameEngine) drawScene() {
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)/int(g.tex.Width/int32(g.tileSrc.Width)))
 			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 			//rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), g.tileDest.ToInt32().Width, g.tileDest.ToInt32().Height, rl.Blue)
-			if rl.CheckCollisionRecs(g.playerDest, g.tileDest) {
+			if rl.CheckCollisionRecs(g.playerDest, g.tileDest) && !g.playerUp {
 				g.playerMoving = true
 				g.playerIsJumping = false
 				g.playerCanJump = true
+
 				g.playerDest.Y -= 1
 
 				// le joueur doit passer de 38 a
