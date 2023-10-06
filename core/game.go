@@ -182,6 +182,11 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
 
+	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.tileDest) && !p.playerCanJump { // sert à généré la gravité
+		p.playerDest.Y += 4
+		p.playerMoving = true
+	}
+
 	if p.playerMoving {
 		if p.playerLeft {
 			p.playerDest.X -= p.playerSpeed
@@ -257,8 +262,8 @@ func (g *gameEngine) drawScene() {
 	//for i <=
 	for i := 0; i < len(g.tileMap); i++ {
 		if g.tileMap[i] != 0 {
-			g.tileDest.X = g.tileDest.Width*float32(i%g.mapW) - 16
-			g.tileDest.Y = g.tileDest.Height*float32(i/g.mapW) - 16
+			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)-16
+			g.tileDest.Y = g.tileDest.Height * float32(i/g.mapW)-16
 
 			if g.srcMap[i] == "g" {
 				g.tex = g.grassSprite
@@ -272,10 +277,6 @@ func (g *gameEngine) drawScene() {
 			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 			rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), int32(g.tileDest.Width), int32(g.tileDest.Height), rl.Beige)
 			fmt.Println(g.tileDest)
-			if !rl.CheckCollisionRecs(g.adjustedHitbox, g.tileDest) && !g.playerCanJump { // sert à généré la gravité
-				p.playerDest.Y += 4
-				p.playerMoving = true
-			}
 			if rl.CheckCollisionRecs(g.adjustedHitbox, g.tileDest) {
 				g.playerMoving = true
 				g.playerIsJumping = true
@@ -286,6 +287,7 @@ func (g *gameEngine) drawScene() {
 			}
 		}
 
+		
 	}
 
 	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32((g.hitboxX+g.hitboxWidth)/4), int32((g.hitboxY+g.hitboxHeight)-290), rl.White)
