@@ -35,7 +35,7 @@ Nous sommes deux développeurs débutant dans le langage de programation Go .
 Pour un support, email nils.jaudon@ynov.com ou clement.garcia@ynov.com vous pouvez nous joindre.
 
 ## ⛔️ INFORMATIONS SUPPLEMENTAIRES
-Nous nous sommes aidés de prompts ainsi que de OpenAI pour la compréhension du sujet et d'évaluer les attendus.
+Nous nous sommes aidés de prompts ainsi que de OpenAI pour la compréhension les librérie ou les librérie n'exister pas.
 
 Prompt est une fonction intégrée qui permet d'afficher une boîte de dialogue modale à l'utilisateur avec un message et une zone de saisie. 
 Elle est généralement utilisée pour obtenir une entrée de l'utilisateur.
