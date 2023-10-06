@@ -257,8 +257,8 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
-	p.playerDown, p.playerRight, p.playerLeft = false, false, false
-	p.playerUp = false
+	// p.playerDown, p.playerRight, p.playerLeft = false, false, false
+	// p.playerUp = false
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
