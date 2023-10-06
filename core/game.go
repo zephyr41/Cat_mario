@@ -53,8 +53,8 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerDest = rl.NewRectangle(100, 0, 32, 32)                              // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 
-	p.tileDest = rl.NewRectangle(0, 0, 32, 32)
-	p.tileSrc = rl.NewRectangle(0, 0, 32, 32)
+	p.tileDest = rl.NewRectangle(0, 0, 16, 16)
+	p.tileSrc = rl.NewRectangle(0, 0, 16, 16)
 	// initialistion du saut du joueur :
 	p.playerCanJump = false
 	p.playerIsJumping = false
