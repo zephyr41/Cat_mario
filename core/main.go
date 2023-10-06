@@ -91,6 +91,8 @@ type gameEngine struct {
 	tileMap    []int
 	srcMap     []string
 	mapW, mapH int
+	MenuDisplay bool
+	
 }
 
 func main() {
