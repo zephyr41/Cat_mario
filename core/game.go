@@ -179,13 +179,11 @@ func (g *gameEngine) loadMap() { // permet de load map
 	remNewLines := re.ReplaceAllString(string(f), " ")
 
 	sliced := strings.Split(remNewLines, " ")
-	//fmt.Println("sliced:", sliced)
 	g.mapW = -1
 	g.mapH = -1
 	for i := 0; i < len(sliced); i++ {
 
 		s, _ := strconv.ParseInt(sliced[i], 10, 64)
-		//fmt.Println("slice", i, sliced[i], "s", s)
 		m := int(s)
 		if g.mapW == -1 {
 			g.mapW = m
@@ -360,6 +358,6 @@ func (p *gameEngine) quit() {
 	rl.UnloadMusicStream(p.musicMenu)
 	rl.UnloadTexture(p.propsSprite)
 	rl.UnloadTexture(p.grassSprite)
-	rl.CloseAudioDevice() //
+	rl.CloseAudioDevice() 
 	rl.CloseWindow()
 }
