@@ -15,7 +15,6 @@ type gameEngine struct {
 	heigh         int32
 	title         string
 	score         int
-	test1         [4]float32
 	dead          bool
 	musicMenu     rl.Music
 	musicIsPaused bool
@@ -30,19 +29,12 @@ type gameEngine struct {
 	*/
 	textureCharacter    rl.Texture2D
 	textureMap          rl.Texture2D
-	wallSpriteSrc       rl.Rectangle
-	littleSpriteSrc     rl.Rectangle
 	plateformSpriteSrc  rl.Rectangle
 	plateformSpriteDest rl.Rectangle
-	objSrc              rl.Rectangle
-	objDest             rl.Rectangle
 	gargantuaDest       rl.Rectangle
 	gargantuaTex        rl.Texture2D
 	gargantuaSrc        rl.Rectangle
 	gargantuaSpeed      int
-	framecountGargantua int
-	playerJumpVelocity  float32
-	testjump            bool
 
 	/* afficher l'explication
 	   ##########################################################
@@ -91,7 +83,7 @@ type gameEngine struct {
 	propsSprite    rl.Texture2D
 	collisionArray []rl.Rectangle
 	tex            rl.Texture2D
-	test rl.Rectangle
+	test           rl.Rectangle
 
 	tileDest   rl.Rectangle
 	tileSrc    rl.Rectangle

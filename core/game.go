@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -55,7 +56,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	// initialistion du saut du joueur :
 	p.playerCanJump = false
 	p.playerIsJumping = false
-	p.playerSpeed = 1.45
+	p.playerSpeed = 5
 	p.gravity = 4.15
 	p.tileDest = rl.NewRectangle(0, 0, 32, 32)
 	p.tileSrc = rl.NewRectangle(0, 0, 32, 32)
@@ -187,22 +188,23 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
+	fmt.Println(p.playerSpeed)
 
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
 		p.playerDest.Y += 5
 		p.playerMoving = true
-		p.playerIsJumping = true
 		p.playerCanJump = false
 		p.playerUp = false
 	}
+
 	// if rl.CheckCollisionRecs(p.adjustedHitbox, p.test) {
 	// 	fmt.Println("collision entre chat", p.adjustedHitbox, " et tile dest", p.tileDest)
 	// 	p.playerDest.Y -= 1
 	// }
 
-	// fmt.Println("le joueur est il entrain de sauté ", p.playerIsJumping)
-	// fmt.Println("le joueur peux il sauté ", p.playerCanJump)
-	// fmt.Println("le joueur appuie t'il sur haut ? ", p.playerUp)
+	fmt.Println("IsJumping ", p.playerIsJumping)
+	fmt.Println("CanJUmp", p.playerCanJump)
+	fmt.Println("Up", p.playerUp)
 	if !rl.CheckCollisionRecs(p.playerDest, p.tileDest) && p.playerCanJump && p.playerUp {
 		p.playerMoving = true
 		p.jumpHmax = int(p.tileDest.Y) - 160
@@ -211,10 +213,9 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 		if p.playerDest.Y <= float32(p.jumpHmax) {
 			//p.jumpHmax = p.playerDest.Y // faire en sorte de récupéré les coordonnées de p.playerDest Y est tant qu'on y est pas le perosnnage saute, comme ça ou qu'il est il peut sauter
 			p.playerCanJump = false
-			p.playerIsJumping = true
+
 			p.playerUp = false
 		}
-
 	}
 
 	// if rl.CheckCollisionRecs(p.adjustedHitbox, p.tileDest) {
@@ -256,6 +257,9 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
+	//p.playerIsJumping = true
+	//p.playerUp = false
+
 	// p.playerDown, p.playerRight, p.playerLeft = false, false, false
 	// p.playerUp = false
 }
@@ -266,7 +270,9 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.Black)
 	rl.BeginMode2D(g.cam2d)
-	rl.DrawText("CAT MARIO", -15, 0, 35, rl.White)
+	rl.DrawText("CAT MARIO", -45, 500, 35, rl.White)
+	rl.DrawText("Press <-  -> for moove ", -60, 550, 1, rl.White)
+	rl.DrawText("Press up to jump ", 90, 550, 1, rl.White)
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}
@@ -313,12 +319,13 @@ func (g *gameEngine) drawScene() {
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)/int(g.tex.Width/int32(g.tileSrc.Width)))
 			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 			//rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), g.tileDest.ToInt32().Width, g.tileDest.ToInt32().Height, rl.Blue)
-			if rl.CheckCollisionRecs(g.playerDest, g.tileDest) && !g.playerUp {
+			if rl.CheckCollisionRecs(g.playerDest, g.tileDest) {
 				g.playerMoving = true
 				g.playerIsJumping = false
 				g.playerCanJump = true
 
 				g.playerDest.Y -= 1
+				g.playerUp = false
 
 				// le joueur doit passer de 38 a
 			}
