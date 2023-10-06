@@ -75,16 +75,132 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.adjustedHitbox = rl.NewRectangle(p.hitboxX, p.hitboxY, p.hitboxWidth, p.hitboxHeight)
 	p.mapPath = "../assets/one.map"
 	p.loadMap()
-	for p.isRunning {
-		//rl.UpdateMusicStream(p.musicMenu)
-		p.input()
-		p.update()
-		p.render()
-
-	}
+	p.display()
+	
 	p.quit()
 	rl.SetExitKey(0) // définit les boutons pour être ouvert fermé ?
 
+}
+// _________________________________________________________________Menu_______________________________________________________________//
+// iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification
+// const actuelle dans une déclaration const (généralement entre parenthèses). Il est indexé à zéro.
+const (
+	MenuDisplay = iota
+	Game
+	Options
+)
+
+var currentGameState = MenuDisplay
+
+func (p *gameEngine) display() {
+	rl.UpdateMusicStream(p.musicMenu)
+	// defer rl.CloseWindow()
+
+	// rl.SetTargetFPS(60)
+	rl.BeginMode2D(p.cam2d)
+	for p.isRunning {
+
+		switch currentGameState {
+		case MenuDisplay:
+			if rl.IsKeyReleased(rl.KeyEnter) {
+				currentGameState = Game
+			} else if rl.IsKeyReleased(rl.KeyO) {
+				currentGameState = Options
+			} else if rl.IsKeyReleased(rl.KeyEscape) {
+				p.quit()
+			}
+		case Game:
+			if rl.IsKeyReleased(rl.KeyEscape) {
+				currentGameState = MenuDisplay
+
+			}
+		case Options:
+			if rl.IsKeyReleased(rl.KeyEscape) {
+				currentGameState = MenuDisplay
+			}
+		}
+
+		rl.BeginDrawing()
+		rl.ClearBackground(rl.RayWhite)
+
+		switch currentGameState {
+		case MenuDisplay:
+			// Menue
+			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
+
+			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
+
+			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter :", 100, 450, 35, rl.White)
+
+			rl.ClearBackground(rl.DarkBlue)
+
+		case Game:
+			// JEUX
+			rl.ClearBackground(rl.Black)
+			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu :", 10, 10, 13, rl.White)
+
+			for p.isRunning {
+				//rl.UpdateMusicStream(p.musicMenu)
+				p.input()
+				p.update()
+				p.render()
+		
+			}
+
+		case Options:
+			// OPTION //
+
+			rl.ClearBackground(rl.White)
+
+			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
+
+			//ESSAIS DE BOUTTONS//
+			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
+				rl.DrawRectangle(15, 90, 50, 50, rl.White)
+				// if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+				// }
+			} else {
+				rl.DrawRectangle(15, 90, 50, 50, rl.LightGray)
+			}
+			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(70, 90, 50, 50)) {
+				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
+				// if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
+				// }
+			} else {
+				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
+			}
+			//ESSAIS DE BOUTTONS//
+			// buttons := []struct {
+			// 	Bounds rl.Rectangle
+			// 	Text   string
+			// }{
+			// 	{rl.NewRectangle(screenWidth/20, screenHeight/20, 150, 40), "Back"},
+			// 	{rl.NewRectangle(screenWidth-(150+screenWidth/20), screenHeight-(40+screenHeight/20), 150, 40), "Quit"},
+			// }
+
+			// for _, button := range buttons {
+			// 	color := rl.Yellow
+			// 	if rl.CheckCollisionPointRec(rl.GetMousePosition(), button.Bounds) {
+			// 		color = rl.DarkGray
+			// 		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+			// 			switch button.Text {
+			// 			case "Back":
+			// 				currentScreen = 1
+			// 			case "Quit":
+			// 				rl.UnloadMusicStream(bgMusic)
+			// 				rl.CloseAudioDevice()
+			// 				rl.CloseWindow()
+			// 				return
+			// 			}
+
+			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
+
+			// QUiTTEZ //
+			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu :", 300, 45, 35, rl.Brown)
+		}
+		rl.EndMode2D()
+		rl.EndDrawing()
+	}
 }
 
 func (g *gameEngine) loadMap() {
@@ -351,122 +467,4 @@ func (p *gameEngine) quit() {
 	rl.CloseAudioDevice()
 	rl.CloseWindow()
 }
-
-// _________________________________________________________________Menu_______________________________________________________________//
-// iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification
-// const actuelle dans une déclaration const (généralement entre parenthèses). Il est indexé à zéro.
-// const (
-// 	MenuDisplay = iota
-// 	Game
-// 	Options
-// )
-
-// var currentGameState = MenuDisplay
-
-// func (p *gameEngine) display() {
-// 	rl.UpdateMusicStream(p.musicMenu)
-// 	// defer rl.CloseWindow()
-
-// 	// rl.SetTargetFPS(60)
-// 	rl.BeginMode2D(p.cam2d)
-// 	for p.isRunning {
-
-// 		switch currentGameState {
-// 		case MenuDisplay:
-// 			if rl.IsKeyReleased(rl.KeyEnter) {
-// 				currentGameState = Game
-// 			} else if rl.IsKeyReleased(rl.KeyO) {
-// 				currentGameState = Options
-// 			} else if rl.IsKeyReleased(rl.KeyEscape) {
-// 				p.quit()
-// 			}
-// 		case Game:
-// 			if rl.IsKeyReleased(rl.KeyEscape) {
-// 				currentGameState = MenuDisplay
-
-// 			}
-// 		case Options:
-// 			if rl.IsKeyReleased(rl.KeyEscape) {
-// 				currentGameState = MenuDisplay
-// 			}
-// 		}
-
-// 		rl.BeginDrawing()
-// 		rl.ClearBackground(rl.RayWhite)
-
-// 		switch currentGameState {
-// 		case MenuDisplay:
-// 			// Menue
-// 			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
-//A
-// 			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
-
-// 			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter :", 100, 450, 35, rl.White)
-
-// 			rl.ClearBackground(rl.DarkBlue)
-
-// 		case Game:
-// 			// JEUX
-// 			rl.ClearBackground(rl.Black)
-// 			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu :", 10, 10, 13, rl.White)
-
-// 			p.input()
-// 			p.update()
-// 			p.render()
-
-// 		case Options:
-// 			// OPTION //
-
-// 			rl.ClearBackground(rl.White)
-
-// 			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
-
-// 			//ESSAIS DE BOUTTONS//
-// 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
-// 				rl.DrawRectangle(15, 90, 50, 50, rl.White)
-// 				// if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-// 				// }
-// 			} else {
-// 				rl.DrawRectangle(15, 90, 50, 50, rl.LightGray)
-// 			}
-// 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(70, 90, 50, 50)) {
-// 				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
-// 				// if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
-// 				// }
-// 			} else {
-// 				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
-// 			}
-// 			//ESSAIS DE BOUTTONS//
-// 			// buttons := []struct {
-// 			// 	Bounds rl.Rectangle
-// 			// 	Text   string
-// 			// }{
-// 			// 	{rl.NewRectangle(screenWidth/20, screenHeight/20, 150, 40), "Back"},
-// 			// 	{rl.NewRectangle(screenWidth-(150+screenWidth/20), screenHeight-(40+screenHeight/20), 150, 40), "Quit"},
-// 			// }
-
-// 			// for _, button := range buttons {
-// 			// 	color := rl.Yellow
-// 			// 	if rl.CheckCollisionPointRec(rl.GetMousePosition(), button.Bounds) {
-// 			// 		color = rl.DarkGray
-// 			// 		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-// 			// 			switch button.Text {
-// 			// 			case "Back":
-// 			// 				currentScreen = 1
-// 			// 			case "Quit":
-// 			// 				rl.UnloadMusicStream(bgMusic)
-// 			// 				rl.CloseAudioDevice()
-// 			// 				rl.CloseWindow()
-// 			// 				return
-// 			// 			}
-
-// 			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
-
-// 			// QUiTTEZ //
-// 			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu :", 300, 45, 35, rl.Brown)
-// 		}
-// 		rl.EndMode2D()
-// 		rl.EndDrawing()
-// 	}
-// }
 //test
