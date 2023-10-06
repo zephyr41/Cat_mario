@@ -355,118 +355,119 @@ func (p *gameEngine) quit() {
 // _________________________________________________________________Menu_______________________________________________________________//
 // iota est un identificateur prédéclaré représentant le numéro ordinal entier non typé de la spécification
 // const actuelle dans une déclaration const (généralement entre parenthèses). Il est indexé à zéro.
-// const (
-// 	MenuDisplay = iota
-// 	Game
-// 	Options
-// )
+const (
+	MenuDisplay = iota
+	Game
+	Options
+)
 
 // var currentGameState = MenuDisplay
 
-// func (p *gameEngine) display() {
-// 	rl.UpdateMusicStream(p.musicMenu)
-// 	// defer rl.CloseWindow()
+func (p *gameEngine) display() {
+	rl.UpdateMusicStream(p.musicMenu)
+	// defer rl.CloseWindow()
 
-// 	// rl.SetTargetFPS(60)
-// 	rl.BeginMode2D(p.cam2d)
-// 	for p.isRunning {
+	// rl.SetTargetFPS(60)
+	rl.BeginMode2D(p.cam2d)
+	for p.isRunning {
 
-// 		switch currentGameState {
-// 		case MenuDisplay:
-// 			if rl.IsKeyReleased(rl.KeyEnter) {
-// 				currentGameState = Game
-// 			} else if rl.IsKeyReleased(rl.KeyO) {
-// 				currentGameState = Options
-// 			} else if rl.IsKeyReleased(rl.KeyEscape) {
-// 				p.quit()
-// 			}
-// 		case Game:
-// 			if rl.IsKeyReleased(rl.KeyEscape) {
-// 				currentGameState = MenuDisplay
+		switch currentGameState {
+		case MenuDisplay:
+			if rl.IsKeyReleased(rl.KeyEnter) {
+				currentGameState = Game
+			} else if rl.IsKeyReleased(rl.KeyO) {
+				currentGameState = Options
+			} else if rl.IsKeyReleased(rl.KeyEscape) {
+				p.quit()
+			}
+		case Game:
+			if rl.IsKeyReleased(rl.KeyEscape) {
+				currentGameState = MenuDisplay
 
-// 			}
-// 		case Options:
-// 			if rl.IsKeyReleased(rl.KeyEscape) {
-// 				currentGameState = MenuDisplay
-// 			}
-// 		}
+			}
+		case Options:
+			if rl.IsKeyReleased(rl.KeyEscape) {
+				currentGameState = MenuDisplay
+			}
+		}
 
-// 		rl.BeginDrawing()
-// 		rl.ClearBackground(rl.RayWhite)
+		rl.BeginDrawing()
+		rl.ClearBackground(rl.RayWhite)
 
-// 		switch currentGameState {
-// 		case MenuDisplay:
-// 			// Menue
-// 			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
-//A
-// 			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
+		switch currentGameState {
+		case MenuDisplay:
+			// Menue
+			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
 
-// 			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter :", 100, 450, 35, rl.White)
+			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
 
-// 			rl.ClearBackground(rl.DarkBlue)
+			rl.DrawText("QUIT - Appuyez sur ESCAPE pour quitter :", 100, 450, 35, rl.White)
 
-// 		case Game:
-// 			// JEUX
-// 			rl.ClearBackground(rl.Black)
-// 			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu :", 10, 10, 13, rl.White)
+			rl.ClearBackground(rl.DarkBlue)
 
-// 			p.input()
-// 			p.update()
-// 			p.render()
+		case Game:
+			// JEUX
+			rl.ClearBackground(rl.Black)
+			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu :", 10, 10, 13, rl.White)
 
-// 		case Options:
-// 			// OPTION //
+			p.input()
+			p.update()
+			p.render()
 
-// 			rl.ClearBackground(rl.White)
+		case Options:
+			// OPTION //
 
-// 			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
+			rl.ClearBackground(rl.White)
 
-// 			//ESSAIS DE BOUTTONS//
-// 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
-// 				rl.DrawRectangle(15, 90, 50, 50, rl.White)
-// 				// if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-// 				// }
-// 			} else {
-// 				rl.DrawRectangle(15, 90, 50, 50, rl.LightGray)
-// 			}
-// 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(70, 90, 50, 50)) {
-// 				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
-// 				// if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
-// 				// }
-// 			} else {
-// 				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
-// 			}
-// 			//ESSAIS DE BOUTTONS//
-// 			// buttons := []struct {
-// 			// 	Bounds rl.Rectangle
-// 			// 	Text   string
-// 			// }{
-// 			// 	{rl.NewRectangle(screenWidth/20, screenHeight/20, 150, 40), "Back"},
-// 			// 	{rl.NewRectangle(screenWidth-(150+screenWidth/20), screenHeight-(40+screenHeight/20), 150, 40), "Quit"},
-// 			// }
+			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
 
-// 			// for _, button := range buttons {
-// 			// 	color := rl.Yellow
-// 			// 	if rl.CheckCollisionPointRec(rl.GetMousePosition(), button.Bounds) {
-// 			// 		color = rl.DarkGray
-// 			// 		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-// 			// 			switch button.Text {
-// 			// 			case "Back":
-// 			// 				currentScreen = 1
-// 			// 			case "Quit":
-// 			// 				rl.UnloadMusicStream(bgMusic)
-// 			// 				rl.CloseAudioDevice()
-// 			// 				rl.CloseWindow()
-// 			// 				return
-// 			// 			}
+			//ESSAIS DE BOUTTONS//
+			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
+				rl.DrawRectangle(15, 90, 50, 50, rl.White)
+				// if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+				// }
+			} else {
+				rl.DrawRectangle(15, 90, 50, 50, rl.LightGray)
+			}
+			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(70, 90, 50, 50)) {
+				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
+				// if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
+				// }
+			} else {
+				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
+			}
+			//ESSAIS DE BOUTTONS//
+			// buttons := []struct {
+			// 	Bounds rl.Rectangle
+			// 	Text   string
+			// }{
+			// 	{rl.NewRectangle(screenWidth/20, screenHeight/20, 150, 40), "Back"},
+			// 	{rl.NewRectangle(screenWidth-(150+screenWidth/20), screenHeight-(40+screenHeight/20), 150, 40), "Quit"},
+			// }
 
-// 			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
+			// for _, button := range buttons {
+			// 	color := rl.Yellow
+			// 	if rl.CheckCollisionPointRec(rl.GetMousePosition(), button.Bounds) {
+			// 		color = rl.DarkGray
+			// 		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
+			// 			switch button.Text {
+			// 			case "Back":
+			// 				currentScreen = 1
+			// 			case "Quit":
+			// 				rl.UnloadMusicStream(bgMusic)
+			// 				rl.CloseAudioDevice()
+			// 				rl.CloseWindow()
+			// 				return
+			// 			}
 
-// 			// QUiTTEZ //
-// 			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu :", 300, 45, 35, rl.Brown)
-// 		}
-// 		rl.EndMode2D()
-// 		rl.EndDrawing()
-// 	}
-// }
-//test
+			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
+
+			// QUiTTEZ //
+			rl.DrawText("OPTIONS - Appuyez sur ESCAPE pour revenir au menu :", 300, 45, 35, rl.Brown)
+		}
+		rl.EndMode2D()
+		rl.EndDrawing()
+	}
+}
+
+
