@@ -31,6 +31,12 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.SetTargetFPS(60) // définit les fps a x
 	p.isRunning = true
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
+	p.grassSprite = rl.LoadTexture("../assets/gargantua.png")
+	p.hillSprite = rl.LoadTexture("../assets/gargantua.png")
+	p.fenceSprite = rl.LoadTexture("../assets/gargantua.png")
+	p.houseSprite = rl.LoadTexture("../assets/gargantua.png")
+	p.waterSprite = rl.LoadTexture("../assets/gargantua.png")
+	p.tilledSprite = rl.LoadTexture("../assets/gargantua.png")
 	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1000, 394)
 	// check combien de 32x32 par tuile,
 	p.plateformSpriteDest = rl.NewRectangle(0, 30, 153, 49)
@@ -47,8 +53,9 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerSrc = rl.NewRectangle(1, 195, 32, 32)                               // selectionne un bout d'image dans la sheet sprite
 	p.playerDest = rl.NewRectangle(100, 0, 32, 32)                              // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
-	p.tileSrc = rl.NewRectangle(0, 0, 0, 0)
-	p.tileDest = rl.NewRectangle(0, 0, 0, 0)
+
+	p.tileDest = rl.NewRectangle(0, 0, 16, 16)
+	p.tileSrc = rl.NewRectangle(0, 0, 16, 16)
 	// initialistion du saut du joueur :
 	p.playerCanJump = false
 	p.playerIsJumping = false
@@ -82,6 +89,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.SetExitKey(0) // définit les boutons pour être ouvert fermé ?
 
 }
+
 func (g *gameEngine) loadMap() {
 	f, err := os.ReadFile(g.mapPath)
 
@@ -279,27 +287,45 @@ func (g *gameEngine) drawScene() {
 	// rl.NewRectangle(x max 32*32 mais = 32, y = reste , 32,32)
 
 	//for i <=
-	fmt.Println("la taille de g.tileMap = ", g.tileMap)
+
 	for i := 0; i < len(g.tileMap); i++ {
-		fmt.Println("la taille de g.tileMap = ", i)
 		if g.tileMap[i] != 0 {
 			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
-			fmt.Println(g.tileDest.X)
 			g.tileDest.Y = g.tileDest.Height * float32(i/g.mapW)
-			fmt.Println(g.tileDest.Y)
 
-			if g.tileSrc.Width != 0 {
-				g.tileSrc.X += 130
-			} else {
-				g.tileSrc.X += 130
+			if g.srcMap[i] == "g" {
+				g.tex = g.grassSprite
 			}
-			if g.tileSrc.Height != 0 {
-				g.tileSrc.Y += 30
-			} else {
-				g.tileSrc.Y += 300
+			if g.srcMap[i] == "l" {
+				g.tex = g.hillSprite
 			}
-			fmt.Println("element ajouté", g.tileDest.X, g.tileDest.Y)
-			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(0, 0), 0, rl.Red)
+			if g.srcMap[i] == "f" {
+				g.tex = g.fenceSprite
+			}
+			if g.srcMap[i] == "h" {
+				g.tex = g.houseSprite
+			}
+			if g.srcMap[i] == "w" {
+				g.tex = g.waterSprite
+			}
+			if g.srcMap[i] == "t" {
+				g.tex = g.tilledSprite
+			}
+
+			if g.srcMap[i] == "h" || g.srcMap[i] == "f" {
+				g.tileSrc.X = 0
+				g.tileSrc.Y = 0
+				rl.DrawTexturePro(g.grassSprite, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
+
+			}
+			fmt.Println("la source de la map est ", g.tileSrc.Width)
+			test := float32((g.tileMap[i] - 1) % int(g.tex.Width/int32(g.tileSrc.Width)))
+			fmt.Println("le chiffre multiplicateur est ", test)
+			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.tex.Width/int32(g.tileSrc.Width)))
+			fmt.Println("le resultat est : ", g.tileSrc.X)
+			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)/int(g.tex.Width/int32(g.tileSrc.Width)))
+
+			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
 
 		}
 	}

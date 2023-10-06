@@ -32,7 +32,6 @@ type gameEngine struct {
 	textureMap          rl.Texture2D
 	wallSpriteSrc       rl.Rectangle
 	littleSpriteSrc     rl.Rectangle
-	tex                 rl.Texture2D
 	plateformSpriteSrc  rl.Rectangle
 	plateformSpriteDest rl.Rectangle
 	objSrc              rl.Rectangle
@@ -87,19 +86,20 @@ type gameEngine struct {
 	// gameMap      *tiled.Map
 	// myGroup      tiled.Group
 	// img          *image.NRGBA
-	mapW         int
-	mapH         int
-	tileDest     rl.Rectangle
-	tileSrc      rl.Rectangle
-	tileMap      []int
-	srcMap       []string
+
 	grassSprite  rl.Texture2D
 	hillSprite   rl.Texture2D
 	fenceSprite  rl.Texture2D
 	houseSprite  rl.Texture2D
 	waterSprite  rl.Texture2D
 	tilledSprite rl.Texture2D
+	tex          rl.Texture2D
 
+	tileDest   rl.Rectangle
+	tileSrc    rl.Rectangle
+	tileMap    []int
+	srcMap     []string
+	mapW, mapH int
 }
 
 func main() {
