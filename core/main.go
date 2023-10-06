@@ -58,7 +58,6 @@ type gameEngine struct {
 
 	playerFrame int
 
-	// playerCanJump bool
 	cam2d rl.Camera2D
 
 	hitboxHeight       float32
@@ -68,29 +67,17 @@ type gameEngine struct {
 	adjustedHitbox     rl.Rectangle
 	adjustedPlayerDest rl.Rectangle
 
-	// tileDest                    rl.Rectangle
-	// tileSrc                     rl.Rectangle
-	// tileMap                     []int
 	mapPath string
-	// srcMap                      []string
-	// mapFileWidth, mapFileHeight int
-	// img                         image.NRGBA
-	// gameMap      *tiled.Map
-	// myGroup      tiled.Group
-	// img          *image.NRGBA
 
-	grassSprite    rl.Texture2D
-	propsSprite    rl.Texture2D
-	collisionArray []rl.Rectangle
-	tex            rl.Texture2D
-	test           rl.Rectangle
-
-	life       int
-	tileDest   rl.Rectangle
-	tileSrc    rl.Rectangle
-	tileMap    []int
-	srcMap     []string
-	mapW, mapH int
+	grassSprite rl.Texture2D
+	propsSprite rl.Texture2D
+	tex         rl.Texture2D
+	life        int
+	tileDest    rl.Rectangle
+	tileSrc     rl.Rectangle
+	tileMap     []int
+	srcMap      []string
+	mapW, mapH  int
 }
 
 func main() {

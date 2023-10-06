@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -12,11 +11,11 @@ import (
 )
 
 func (p *gameEngine) Init(width int32, height int32, title string, isRunning bool, dead bool, score int) { // initialise les propriété de la fenetre
-	// Pour selectionner notre joueur (faire une structure plus tard ? ) :
-	// va déssiner un rectangle dans la feuille de sprite pour pouvoir dessiner mario : il aura : x & y la position de ou il part
+	// Pour selectionner notre joueur :
+	// va déssiner un rectangle dans la feuille de sprite pour pouvoir dessiner le chat : il aura : x & y est position de ou il est sur la feuille
 	// width et heigt seront la largeur de la fenetre
-	// src est la source (la feuille) donc ça position
-	// Dest est la ou on l'envoie (notre fênetre de jeu)
+	// src est la source (la feuille) donc ça position dans le sprite
+	// Dest est la ou on l'envoie dans notre (notre fênetre de jeu)
 	p.width = width
 	p.heigh = height
 	p.title = title
@@ -28,22 +27,21 @@ func (p *gameEngine) Init(width int32, height int32, title string, isRunning boo
 
 func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	rl.InitWindow(p.width, p.heigh, p.title)
-	rl.SetTargetFPS(60) // définit les fps a x
+	rl.SetTargetFPS(60) // définit les fps a x ici 60
 	p.isRunning = true
 	p.textureCharacter = rl.LoadTexture("../assets/Tile.png")
 	p.grassSprite = rl.LoadTexture("../assets/TX_Tileset_Ground.png")
 	p.propsSprite = rl.LoadTexture("../assets/TX_Village_Props.png")
 
 	p.plateformSpriteSrc = rl.NewRectangle(251, 1583, 1000, 394)
-	// check combien de 32x32 par tuile,
+
 	p.plateformSpriteDest = rl.NewRectangle(0, 30, 153, 49)
 	p.tex = rl.LoadTexture("assets/TX_Tileset_Ground.png")
-	//p.objDest = rl.NewRectangle(0, 0, 306, 166)
 	p.textureMap = rl.LoadTexture("../assets/Mossy_TileSet.png")
 
 	p.gargantuaTex = rl.LoadTexture("../assets/gargantua.png")
 	p.gargantuaSrc = rl.NewRectangle(0, 0, 200, 200)
-	p.gargantuaDest = rl.NewRectangle(35, -80, 100, 100)
+	p.gargantuaDest = rl.NewRectangle(170, 465, 100, 100)
 	p.gargantuaSpeed = 2
 
 	// source du joueur
@@ -63,23 +61,18 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/4), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 2.0)
 
-	// rl.InitAudioDevice()
-	//p.musicMenu = rl.LoadMusicStream("../audio/peace.wav")
-	// p.musicIsPaused = false
-	//rl.PlayMusicStream(p.musicMenu)
-
 	p.hitboxWidth = p.playerDest.Width / 4
 	p.hitboxHeight = p.playerDest.Height / 4
-	p.hitboxX = p.playerDest.X + p.playerDest.Width/4  // Décalage horizontal pour centrer
-	p.hitboxY = p.playerDest.Y + p.playerDest.Height/4 // Décalage vertical pour centrer
+	p.hitboxX = p.playerDest.X + p.playerDest.Width/4  // Décalage horizontal pour centrer la hitbox
+	p.hitboxY = p.playerDest.Y + p.playerDest.Height/4 // Décalage vertical pour centrer la hitbox
 	p.adjustedHitbox = rl.NewRectangle(p.hitboxX, p.hitboxY, p.hitboxWidth, p.hitboxHeight)
-	p.mapPath = "../assets/one.map"
-	p.life = 3
-	p.loadMap()
-	p.display()
+	p.mapPath = "../assets/one.map" // lien de la map
+	p.life = 3                      // lien des vies
+	p.loadMap()                     // charge la map
+	p.display()                     // affiche le mnu
 
 	p.quit()
-	rl.SetExitKey(0) // définit les boutons pour être ouvert fermé ?
+	rl.SetExitKey(0) // définit Echap comme exit Key
 
 }
 
@@ -95,15 +88,11 @@ const (
 var currentGameState = MenuDisplay
 
 func (p *gameEngine) display() {
-	rl.UpdateMusicStream(p.musicMenu)
-	// defer rl.CloseWindow()
-
-	// rl.SetTargetFPS(60)
-	rl.BeginMode2D(p.cam2d)
-	for p.isRunning {
+	rl.BeginMode2D(p.cam2d) // initialise la caméra
+	for p.isRunning {       // tant que le jeu est en cours
 
 		switch currentGameState {
-		case MenuDisplay:
+		case MenuDisplay: // set les keys pour attrivuer au valeur
 			if rl.IsKeyReleased(rl.KeyEnter) {
 				currentGameState = Game
 			} else if rl.IsKeyReleased(rl.KeyO) {
@@ -125,9 +114,9 @@ func (p *gameEngine) display() {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.RayWhite)
 
-		switch currentGameState {
+		switch currentGameState { // si on est dans le menu afficher :
 		case MenuDisplay:
-			// Menue
+			// Menu
 			rl.DrawText("PLAY - Appuyez sur ENTER pour jouer :", 100, 150, 35, rl.White)
 
 			rl.DrawText("OPTIONS - Appuyez sur O pour accéder aux options :", 100, 300, 35, rl.White)
@@ -142,7 +131,6 @@ func (p *gameEngine) display() {
 			rl.DrawText("JEU EN COURS - Appuyez sur ESCAPE pour revenir au menu :", 10, 10, 13, rl.White)
 
 			for p.isRunning {
-				//rl.UpdateMusicStream(p.musicMenu)
 				p.input()
 				p.update()
 				p.render()
@@ -150,50 +138,25 @@ func (p *gameEngine) display() {
 			}
 
 		case Options:
-			// OPTION //
+			// OPTION // pour les menus
 
 			rl.ClearBackground(rl.White)
 
 			rl.DrawText("Setings Glogbal :", 580, 1, 35, rl.White)
 
-			//ESSAIS DE BOUTTONS//
 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(15, 90, 50, 50)) {
 				rl.DrawRectangle(15, 90, 50, 50, rl.White)
-				// if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-				// }
+
 			} else {
 				rl.DrawRectangle(15, 90, 50, 50, rl.LightGray)
 			}
 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), rl.NewRectangle(70, 90, 50, 50)) {
 				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
-				// if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
+
 				// }
 			} else {
 				rl.DrawRectangle(70, 90, 50, 50, rl.Yellow)
 			}
-			//ESSAIS DE BOUTTONS//
-			// buttons := []struct {
-			// 	Bounds rl.Rectangle
-			// 	Text   string
-			// }{
-			// 	{rl.NewRectangle(screenWidth/20, screenHeight/20, 150, 40), "Back"},
-			// 	{rl.NewRectangle(screenWidth-(150+screenWidth/20), screenHeight-(40+screenHeight/20), 150, 40), "Quit"},
-			// }
-
-			// for _, button := range buttons {
-			// 	color := rl.Yellow
-			// 	if rl.CheckCollisionPointRec(rl.GetMousePosition(), button.Bounds) {
-			// 		color = rl.DarkGray
-			// 		if rl.IsMouseButtonPressed(rl.MouseLeftButton) {
-			// 			switch button.Text {
-			// 			case "Back":
-			// 				currentScreen = 1
-			// 			case "Quit":
-			// 				rl.UnloadMusicStream(bgMusic)
-			// 				rl.CloseAudioDevice()
-			// 				rl.CloseWindow()
-			// 				return
-			// 			}
 
 			rl.DrawText("FPS-TOUCHES", 580, 85, 35, rl.White)
 
@@ -205,8 +168,8 @@ func (p *gameEngine) display() {
 	}
 }
 
-func (g *gameEngine) loadMap() {
-	f, err := os.ReadFile(g.mapPath)
+func (g *gameEngine) loadMap() { // permet de load map
+	f, err := os.ReadFile(g.mapPath) // ouvre le fichier
 
 	if err != nil {
 		log.Fatal(err)
@@ -214,11 +177,6 @@ func (g *gameEngine) loadMap() {
 
 	re := regexp.MustCompile(`\r?\n`)
 	remNewLines := re.ReplaceAllString(string(f), " ")
-
-	//a := "5 5\n1 1 1 1 1\n1 8 1 1 1\n1 2 3 1 1\n1 4 1 11 01\n1 1 1 02 01\ng g g g g\ng g g g g\ng g g g g\ng g g g g\ng g l l w"
-	//remNewLines := strings.Replace(a, "\n", " ", -1)
-
-	//fmt.Println("remNewLines:", remNewLines)
 
 	sliced := strings.Split(remNewLines, " ")
 	//fmt.Println("sliced:", sliced)
@@ -244,44 +202,20 @@ func (g *gameEngine) loadMap() {
 	if len(g.tileMap) > g.mapW*g.mapH {
 		g.tileMap = g.tileMap[:len(g.tileMap)-1]
 	}
-	/*
-		fmt.Println("tileMap", tileMap)
-		fmt.Println("srcMap", srcMap)
-		fmt.Println("mapW", mapW)
-		fmt.Println("mapH", mapH)
-	*/
-	/*
-		mapW = 5
-		mapH = 5
-		for i := 0; i < (mapW * mapH); i++ {
-			tileMap = append(tileMap, 1)
-		}
-	*/
 }
 func (w *gameEngine) input() { // récupère les inputs de la map
 
-	if rl.IsKeyDown(rl.KeyUp) { // key left
-		//w.adjustedHitbox.Y -= w.playerSpeed
+	if rl.IsKeyDown(rl.KeyUp) {
 		w.playerUp = true // dit qu'il va en haut
 		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
-		// pareil pour tous
-
 	}
-	// if rl.IsKeyDown(rl.KeyDown) { // key left
-	// 	w.playerDest.Y += w.playerSpeed
 
-	// 	w.playerMoving = true
-	// 	w.playerDown = true
-	// 	w.playerDir = 18
-	// 	w.adjustedHitbox.Y += w.playerSpeed
-
-	// }
 	if rl.IsKeyDown(rl.KeyLeft) { // key left
 		w.playerDest.X -= w.playerSpeed
 		w.playerMoving = true
 		w.playerDir = 5
 		w.playerLeft = true
-		w.adjustedHitbox.X -= w.playerSpeed
+		w.adjustedHitbox.X -= w.playerSpeed // permet d'ajuster la hibox
 
 	}
 
@@ -290,60 +224,40 @@ func (w *gameEngine) input() { // récupère les inputs de la map
 		w.playerMoving = true
 		w.playerRight = true
 		w.playerDir = 6
-		w.adjustedHitbox.X += w.playerSpeed
+		w.adjustedHitbox.X += w.playerSpeed // ajuste la hitbox
 
-	}
-
-	if rl.IsKeyPressed(rl.KeyM) { // key left
-		w.musicIsPaused = !w.musicIsPaused
-
-		w.playerUp = true
 	}
 
 }
 
-func (p *gameEngine) update() { // va définir les mouvements du personnage
-	p.isRunning = !rl.WindowShouldClose()
+func (p *gameEngine) update() { // va définir les mouvements du personnage en les mettans en jours
+	p.isRunning = !rl.WindowShouldClose() // tant que la fentre run
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
-	fmt.Println(p.playerDest.Y)
-	if p.playerDest.Y >= 1000 {
+	if p.playerDest.Y >= 1000 { // permet de faire respawn le joueur a son emplacement
 		p.playerDest.Y = 600
 		p.playerDest.X = 60
-		p.life--
 	}
-	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
+	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité tant que le joueur n'est pas en collision
 		p.playerDest.Y += 5
 		p.playerMoving = true
 		p.playerCanJump = false
 		p.playerUp = false
 	}
 
-	// if rl.CheckCollisionRecs(p.adjustedHitbox, p.test) {
-	// 	fmt.Println("collision entre chat", p.adjustedHitbox, " et tile dest", p.tileDest)
-	// 	p.playerDest.Y -= 1
-	// }
-
-	fmt.Println("IsJumping ", p.playerIsJumping)
-	fmt.Println("CanJUmp", p.playerCanJump)
-	fmt.Println("Up", p.playerUp)
+	// si le joueur n'est pas en collision et qu'il saute, alors il monte de 160 pixel
 	if !rl.CheckCollisionRecs(p.playerDest, p.tileDest) && p.playerCanJump && p.playerUp {
 		p.playerMoving = true
 		p.jumpHmax = int(p.tileDest.Y) - 160
 		p.jumpHmax -= 5
 		p.playerDest.Y -= 5
 		if p.playerDest.Y <= float32(p.jumpHmax) {
-			//p.jumpHmax = p.playerDest.Y // faire en sorte de récupéré les coordonnées de p.playerDest Y est tant qu'on y est pas le perosnnage saute, comme ça ou qu'il est il peut sauter
 			p.playerCanJump = false
 
 			p.playerUp = false
 		}
 	}
-
-	// if rl.CheckCollisionRecs(p.adjustedHitbox, p.tileDest) {
-	// 	fmt.Println("collision entre x box et tile dest")
-	// 	i++
-	// }
+	// permet de faire bouger le joueur tout en mettant a jours la feuille de sprite pour les animations
 
 	if p.playerMoving {
 		if p.playerLeft {
@@ -360,71 +274,50 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	}
 	p.FrameCount++
 	if p.FrameCount%12 == 1 {
-		p.gargantuaSrc.X += 200
+		p.gargantuaSrc.X += 200 // permet d'animer le troue noir
 		p.gargantuaSrc.Y += 200
 	}
-	if p.playerFrame > 3 {
+	if p.playerFrame > 3 { // permet de dire que tout les x temps l'image du chat de base devient x
 		p.playerFrame = 0
 	}
 
-	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame)
-	p.playerSrc.Y = p.playerSrc.Width * float32(p.playerDir)
+	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame) // change la source du sprite pour animer le chat en largeur
+	p.playerSrc.Y = p.playerSrc.Width * float32(p.playerDir)   // change la source du sprite pour animer le chat en hauteur
 
-	rl.UpdateMusicStream(p.musicMenu)
+	rl.UpdateMusicStream(p.musicMenu) // lance une musique qui ne marche pas :(
 	if p.musicIsPaused {
 		rl.PauseMusicStream(p.musicMenu)
 	} else {
 		rl.ResumeMusicStream(p.musicMenu)
 	}
 
-	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
-	p.playerMoving = false
-	//p.playerIsJumping = true
-	//p.playerUp = false
+	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)) // met a jour la caméra du chat
+	p.playerMoving = false                                                                                                      // dit qu'il ne bouge plus si aucune touche n'est préssé , (func input)
 
-	// p.playerDown, p.playerRight, p.playerLeft = false, false, false
-	// p.playerUp = false
 }
 
 //_________________________________________________________________Menu_______________________________________________________________//
 
 func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire les dessins
-	rl.BeginDrawing()
-	rl.ClearBackground(rl.Black)
-	rl.BeginMode2D(g.cam2d)
-	rl.DrawText("CAT MARIO", -45, 500, 35, rl.White)
+	rl.BeginDrawing()                                // commence le decssin
+	rl.ClearBackground(rl.Black)                     // met du noir en fond
+	rl.BeginMode2D(g.cam2d)                          // active la caméra
+	rl.DrawText("CAT MARIO", -45, 500, 35, rl.White) // tuto pour le joueur
 	rl.DrawText("Press <-  -> for moove ", -60, 550, 1, rl.White)
 	rl.DrawText("Press up to jump ", 90, 550, 1, rl.White)
-
-	// // faire une condition pour dire tant que le joueur n'est pas mort :
-	//rl.DrawTexture(g.TxSprites, g.frameRec)
-	// // sourceTest := rl.Rectangle{}
-	// // destRecTest := rl.Rectangle{}
-	// // originTest := rl.Vector2{}
-
-	//rl.DrawTexture(g.texture,0,0,rl.White)
-	g.drawScene()
-	rl.EndMode2D()
-	rl.EndDrawing()
+	g.drawScene()   // déssine la scène
+	rl.EndMode2D()  // enlève la caméra si l'on quitte
+	rl.EndDrawing() // fin du desisn
 
 }
 func (g *gameEngine) drawScene() {
-
-	// ta fais une boucle qui parourt, et pour chaque nombre t'initialise la source et la destion,
+	// ajuste la hitbox pour centrer sur le chat est géré la collision
 	g.adjustedPlayerDest = rl.NewRectangle(g.playerDest.X-g.playerDest.Width/4, g.playerDest.Y-g.playerDest.Height/4, g.playerDest.Width, g.playerDest.Height)
 	g.adjustedHitbox.X = g.adjustedPlayerDest.X + g.playerDest.Width - 46
 	g.adjustedHitbox.Y = g.adjustedPlayerDest.Y + g.playerDest.Height - 49
 
-	// for i:= 0; i < g.img;i++{
-	// 	src := g.img[i] //32 --> le reste = y est 32 ou - = le x
-	// 	dest :=
-	// 	rl.DrawTexturePro(src,dest,rl.newVector2(0,0),0, rl.White)
-	// 	g.pxlateformSpriteDest = g.img[i]
-	// 	// 40
-	// }
-	// rl.NewRectangle(x max 32*32 mais = 32, y = reste , 32,32)
+	// fais une boucle qui parourt, et pour chaque nombre initialise la source et la destion,
 
-	//for i <=
 	for i := 0; i < len(g.tileMap); i++ {
 		if g.tileMap[i] != 0 {
 			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
@@ -432,45 +325,41 @@ func (g *gameEngine) drawScene() {
 
 			if g.srcMap[i] == "g" {
 				g.tex = g.grassSprite
+				// pareil ligne du bas mais pour de la terre
 			}
 			if g.srcMap[i] == "p" {
 				g.tex = g.propsSprite
-				//g.collisionArray = append(g.collisionArray, g.tileMap[i])
+				// si sur la one.map il est affiché p alors la texture devient les props
 			}
 
+			// change la source de l'image pour afficher la case x du sprite en question
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.tex.Width/int32(g.tileSrc.Width)))
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)/int(g.tex.Width/int32(g.tileSrc.Width)))
 			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
-			//rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), g.tileDest.ToInt32().Width, g.tileDest.ToInt32().Height, rl.Blue)
 			if rl.CheckCollisionRecs(g.playerDest, g.tileDest) {
 				g.playerMoving = true
-				g.playerIsJumping = false
+				g.playerIsJumping = false // le joueur n'est pas entrain de sauter
 				g.playerCanJump = true
 
-				g.playerDest.Y -= 1
+				g.playerDest.Y -= 1 // permet de gérér la collision
 				g.playerUp = false
-
-				// le joueur doit passer de 38 a
 			}
 
 		}
 
 	}
 
-	// rl.DrawRectangleLines(int32(g.test.X), int32(g.test.Y), g.test.ToInt32().Width, g.test.ToInt32().Height, rl.Blue)
-	// rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32((g.hitboxX+g.hitboxWidth)/4), int32((g.hitboxY+g.hitboxHeight)/4), rl.White)
-	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
-	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 0, rl.White)
-	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
+	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 0, rl.White) // dessigne gargantua, s/O interstellar
+	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White)        // dessine le joueur
 }
 
 func (p *gameEngine) quit() {
-	rl.UnloadTexture(p.textureCharacter)
-	rl.UnloadTexture(p.textureMap)
-	rl.UnloadTexture(p.gargantuaTex)
+	rl.UnloadTexture(p.textureCharacter) // unload la texture
+	rl.UnloadTexture(p.textureMap)       //
+	rl.UnloadTexture(p.gargantuaTex)     // unload les textures
 	rl.UnloadMusicStream(p.musicMenu)
 	rl.UnloadTexture(p.propsSprite)
 	rl.UnloadTexture(p.grassSprite)
-	rl.CloseAudioDevice()
+	rl.CloseAudioDevice() //
 	rl.CloseWindow()
 }
