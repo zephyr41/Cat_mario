@@ -50,15 +50,15 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerDest = rl.NewRectangle(100, 0, 32, 32)                              // met une zone ou afficher ce bout d'image
 	p.playerVector = rl.NewVector2((p.playerDest.Width), (p.playerDest.Height)) // permet de lui donner une position
 
-	p.tileDest = rl.NewRectangle(0, 0, 16, 16)
-	p.tileSrc = rl.NewRectangle(0, 0, 16, 16)
+	p.tileDest = rl.NewRectangle(0, 0, 32, 32)
+	p.tileSrc = rl.NewRectangle(0, 0, 32, 32)
 	// initialistion du saut du joueur :
 	p.playerCanJump = false
 	p.playerIsJumping = false
 	p.playerSpeed = 1.45
 	p.gravity = 4.15
 	p.tileDest = rl.NewRectangle(0, 0, 16, 16)
-	p.tileSrc = rl.NewRectangle(0, 0, 16, 16)
+	p.tileSrc = rl.NewRectangle(0, 0, 32, 32)
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
 		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 4.0)
 
@@ -143,74 +143,47 @@ func (g *gameEngine) loadMap() {
 func (w *gameEngine) input() { // récupère les inputs de la map
 
 	if rl.IsKeyDown(rl.KeyUp) { // key left
-		//w.adjustedHitbox.Y -= w.playerSpeed
-		w.playerUp = true // dit qu'il va en haut
-		w.playerDir = 17  // permet de set quel frame on veut dans la grille de sprite
+		w.playerDest.Y -= w.playerSpeed
+		w.playerMoving = true // dit que le joueur est en mouvement
+		w.playerDir = 17      // permet de set quel frame on veut dans la grille de sprite
+		w.playerUp = true     // dit qu'il va en haut
 		// pareil pour tous
-
-	}
-	// if rl.IsKeyDown(rl.KeyDown) { // key left
-	// 	w.playerDest.Y += w.playerSpeed
-
-	// 	w.playerMoving = true
-	// 	w.playerDown = true
-	// 	w.playerDir = 18
-	// 	w.adjustedHitbox.Y += w.playerSpeed
-
-	// }
+	}  
+	if rl.IsKeyDown(rl.KeyDown) { // key left
+		w.playerDest.Y += w.playerSpeed
+		w.playerMoving = true
+		w.playerDown = true
+		w.playerDir = 18
+	}  
 	if rl.IsKeyDown(rl.KeyLeft) { // key left
 		w.playerDest.X -= w.playerSpeed
 		w.playerMoving = true
 		w.playerDir = 5
 		w.playerLeft = true
-		w.adjustedHitbox.X -= w.playerSpeed
-
-	}
-
+	} 
 	if rl.IsKeyDown(rl.KeyRight) { // key left
 		w.playerDest.X += w.playerSpeed
 		w.playerMoving = true
 		w.playerRight = true
 		w.playerDir = 6
-		w.adjustedHitbox.X += w.playerSpeed
-
-	}
-
-	if rl.IsKeyPressed(rl.KeyM) { // key left
+	} 
+	 if rl.IsKeyPressed(rl.KeyM) { // key left
 		w.musicIsPaused = !w.musicIsPaused
 
 		w.playerUp = true
 	}
-
 }
 
 func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
-	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
-
-	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
-		p.playerDest.Y += 4
-		p.playerMoving = true
-	}
-	if rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && p.playerUp {
-		p.playerMoving = true
-		p.playerIsJumping = true
-		p.playerCanJump = false
-		p.playerDest.Y -= 1
-		// le joueur doit passer de 38 a
-	}
-	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && p.playerIsJumping {
-		p.playerMoving = true
-		p.playerDest.Y -= p.gravity * 2
-		if p.playerDest.Y <= -20 {
-			p.playerCanJump = false
-			p.playerIsJumping = false
-
-		}
-	}
-
 	if p.playerMoving {
+		if p.playerUp {
+			p.playerDest.Y -= p.playerSpeed // définit par rapport a renderTexture pro pour déduire la vitesse et la re atribuée
+		}
+		if p.playerDown {
+			p.playerDest.Y += p.playerSpeed
+		}
 		if p.playerLeft {
 			p.playerDest.X -= p.playerSpeed
 		}
@@ -219,29 +192,21 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 		}
 		if p.FrameCount%8 == 1 {
 			p.playerFrame++
-
 		}
 
 	}
 	p.FrameCount++
-	if p.FrameCount%12 == 1 {
-		p.gargantuaSrc.X += 200
-		p.gargantuaSrc.Y += 200
-	}
 	if p.playerFrame > 3 {
 		p.playerFrame = 0
 	}
-
 	p.playerSrc.X = p.playerSrc.Width * float32(p.playerFrame)
 	p.playerSrc.Y = p.playerSrc.Width * float32(p.playerDir)
-
 	rl.UpdateMusicStream(p.musicMenu)
 	if p.musicIsPaused {
 		rl.PauseMusicStream(p.musicMenu)
 	} else {
 		rl.ResumeMusicStream(p.musicMenu)
 	}
-
 	p.cam2d.Target = rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/2), float32(p.playerDest.Y-p.playerDest.Height/4))
 	p.playerMoving = false
 	p.playerUp, p.playerDown, p.playerRight, p.playerLeft = false, false, false, false
