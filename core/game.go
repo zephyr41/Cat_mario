@@ -74,6 +74,7 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.hitboxY = p.playerDest.Y + p.playerDest.Height/4 // Décalage vertical pour centrer
 	p.adjustedHitbox = rl.NewRectangle(p.hitboxX, p.hitboxY, p.hitboxWidth, p.hitboxHeight)
 	p.mapPath = "../assets/one.map"
+	p.life = 3
 	p.loadMap()
 	p.display()
 
@@ -305,8 +306,12 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.isRunning = !rl.WindowShouldClose()
 	p.gargantuaSrc.X = 0
 	p.playerSrc.X = 7
-	fmt.Println(p.playerSpeed)
-
+	fmt.Println(p.playerDest.Y)
+	if p.playerDest.Y >= 1000 {
+		p.playerDest.Y = 600
+		p.playerDest.X = 60
+		p.life--
+	}
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.plateformSpriteDest) && !p.playerCanJump { // sert à généré la gravité
 		p.playerDest.Y += 5
 		p.playerMoving = true
@@ -390,6 +395,7 @@ func (g *gameEngine) render() { // permet le rendu de la fenetre c'est à dire l
 	rl.DrawText("CAT MARIO", -45, 500, 35, rl.White)
 	rl.DrawText("Press <-  -> for moove ", -60, 550, 1, rl.White)
 	rl.DrawText("Press up to jump ", 90, 550, 1, rl.White)
+
 	// // faire une condition pour dire tant que le joueur n'est pas mort :
 	//rl.DrawTexture(g.TxSprites, g.frameRec)
 	// // sourceTest := rl.Rectangle{}

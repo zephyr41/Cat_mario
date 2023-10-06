@@ -85,6 +85,7 @@ type gameEngine struct {
 	tex            rl.Texture2D
 	test           rl.Rectangle
 
+	life       int
 	tileDest   rl.Rectangle
 	tileSrc    rl.Rectangle
 	tileMap    []int
