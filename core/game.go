@@ -58,10 +58,10 @@ func (p *gameEngine) initGame() { // Initialise le jeu, en créant la fenêtre ,
 	p.playerIsJumping = false
 	p.playerSpeed = 1.45
 	p.gravity = 4.15
-	p.tileDest = rl.NewRectangle(0, 0, 16, 16)
+	p.tileDest = rl.NewRectangle(0, 0, 32, 32)
 	p.tileSrc = rl.NewRectangle(0, 0, 32, 32)
 	p.cam2d = rl.NewCamera2D(rl.NewVector2(float32(p.width/2), float32(500)),
-		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/4), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 4.0)
+		rl.NewVector2(float32(p.playerDest.X-p.playerDest.Width/4), float32(p.playerDest.Y-p.playerDest.Height/4)), 0.0, 2.0)
 
 	// rl.InitAudioDevice()
 	//p.musicMenu = rl.LoadMusicStream("../audio/peace.wav")
@@ -183,9 +183,18 @@ func (p *gameEngine) update() { // va définir les mouvements du personnage
 	p.playerSrc.X = 7
 
 	if !rl.CheckCollisionRecs(p.adjustedHitbox, p.tileDest) && !p.playerCanJump { // sert à généré la gravité
-		p.playerDest.Y += 4
+		p.playerDest.Y += 1
 		p.playerMoving = true
 	}
+	if rl.CheckCollisionRecs(p.adjustedHitbox, p.test) {
+		fmt.Println("collision entre chat", p.adjustedHitbox, " et tile dest", p.tileDest)
+		p.playerDest.Y -= 1
+	}
+
+	// if rl.CheckCollisionRecs(p.adjustedHitbox, p.tileDest) {
+	// 	fmt.Println("collision entre x box et tile dest")
+	// 	i++
+	// }
 
 	if p.playerMoving {
 		if p.playerLeft {
@@ -262,35 +271,35 @@ func (g *gameEngine) drawScene() {
 	//for i <=
 	for i := 0; i < len(g.tileMap); i++ {
 		if g.tileMap[i] != 0 {
-			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)-16
-			g.tileDest.Y = g.tileDest.Height * float32(i/g.mapW)-16
+			g.tileDest.X = g.tileDest.Width * float32(i%g.mapW)
+			g.tileDest.Y = g.tileDest.Height * float32(i/g.mapW)
 
 			if g.srcMap[i] == "g" {
 				g.tex = g.grassSprite
 			}
 			if g.srcMap[i] == "p" {
 				g.tex = g.propsSprite
+				//g.collisionArray = append(g.collisionArray, g.tileMap[i])
 			}
 
 			g.tileSrc.X = g.tileSrc.Width * float32((g.tileMap[i]-1)%int(g.tex.Width/int32(g.tileSrc.Width)))
 			g.tileSrc.Y = g.tileSrc.Height * float32((g.tileMap[i]-1)/int(g.tex.Width/int32(g.tileSrc.Width)))
 			rl.DrawTexturePro(g.tex, g.tileSrc, g.tileDest, rl.NewVector2(g.tileDest.Width, g.tileDest.Height), 0, rl.White)
-			rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), int32(g.tileDest.Width), int32(g.tileDest.Height), rl.Beige)
-			fmt.Println(g.tileDest)
-			if rl.CheckCollisionRecs(g.adjustedHitbox, g.tileDest) {
-				g.playerMoving = true
-				g.playerIsJumping = true
-				g.playerCanJump = false
+			rl.DrawRectangleLines(int32(g.tileDest.X), int32(g.tileDest.Y), g.tileDest.ToInt32().Width, g.tileDest.ToInt32().Height, rl.Blue)
+			if rl.CheckCollisionRecs(g.tileDest, g.playerDest){
 				g.playerDest.Y -= 1
-				fmt.Println("colision a cet emplacement", g.tileDest)
-				// le joueur doit passer de 38 a
+				fmt.Println("collision")
 			}
+
 		}
 
-		
 	}
-
-	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32((g.hitboxX+g.hitboxWidth)/4), int32((g.hitboxY+g.hitboxHeight)-290), rl.White)
+	fmt.Println("Position du chat : ", g.adjustedHitbox)
+	fmt.Println("Position du carrée : ", g.tileDest.ToInt32().X, g.tileDest.Y)
+	g.test = rl.NewRectangle(float32(g.tileDest.X), (g.tileDest.Y), 100.0, 100.0)
+	
+	rl.DrawRectangleLines(int32(g.test.X), int32(g.test.Y), g.test.ToInt32().Width, g.test.ToInt32().Height, rl.Blue)
+	rl.DrawRectangleLines(int32(g.adjustedHitbox.X), int32(g.adjustedHitbox.Y), int32((g.hitboxX+g.hitboxWidth)/4), int32((g.hitboxY+g.hitboxHeight)/4), rl.White)
 	//rl.DrawTexturePro(g.textureMap, g.plateformSpriteSrc, g.plateformSpriteDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.gargantuaTex, g.gargantuaSrc, g.gargantuaDest, rl.NewVector2(0, 0), 0, rl.White)
 	rl.DrawTexturePro(g.textureCharacter, g.playerSrc, g.playerDest, g.playerVector, 0, rl.White) // drawTextureMario
